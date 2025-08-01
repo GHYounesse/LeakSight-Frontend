@@ -8,6 +8,11 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password/res
 import { AuthGuard } from './core/auth.guard';
 import { UnauthorizedComponent } from './shared/unauthorized/unauthorized.component';
 import { NotFoundComponent } from './shared/notfound/notfound.component';
+
+import { IOCCreationComponent } from './components/ioc/create/ioc-create.component';
+import { IOCListComponent } from './components/ioc/list/ioc-list.component';
+import { ViewIOCComponent } from './components/ioc/view/ioc-view.component';
+import { IOCUpdateComponent } from './components/ioc/update/ioc-update.component';
 export const routes: Routes = [
 
     // Authentification ////////////////
@@ -15,6 +20,11 @@ export const routes: Routes = [
     { path: 'request-reset-password', component: RequestResetPasswordComponent },
     { path: 'login',component:LoginComponent},
     { path: 'reset-password',component:ResetPasswordComponent},
+    ///////////////////IOC ////////////////////////////////////
+    {path:"iocs/create",component:IOCCreationComponent,canActivate: [AuthGuard]},
+    {path:"iocs/edit/:id",component:IOCUpdateComponent,canActivate: [AuthGuard]},
+    {path:"iocs/:id",component:ViewIOCComponent,canActivate: [AuthGuard]},
+    {path:"iocs",component:IOCListComponent,canActivate: [AuthGuard]},
     ///////////////////// Unauthorized //////////////////
     {path:'unauthorized',component:UnauthorizedComponent},
     ////////////// Landing Page ///////////////
