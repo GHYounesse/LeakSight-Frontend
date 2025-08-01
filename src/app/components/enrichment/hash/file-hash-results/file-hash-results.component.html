@@ -1,0 +1,519 @@
+<div class="enrichment-container">
+      <!-- Job Status Header -->
+      <div class="job-status-header glass-effect">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h2 class="job-title text-light mb-3">File Hash Enrichment Analysis</h2>
+            <div class="job-meta d-flex flex-wrap gap-3 align-items-center">
+              <span class="job-id badge bg-secondary">Job ID: {{ enrichmentData!.job_id }}</span>
+              <span class="status-badge badge" [ngClass]="getStatusClass()">
+                {{ enrichmentData!.status.toUpperCase() }}
+              </span>
+              <span class="progress-text text-muted">{{ enrichmentData!.progress }}% Complete</span>
+            </div>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <div class="timestamps">
+              <div class="timestamp mb-2">
+                <span class="label text-muted">Created:</span>
+                <span class="value text-light d-block">{{ formatTimestamp(enrichmentData!.created_at) }}</span>
+              </div>
+              <div class="timestamp">
+                <span class="label text-muted">Updated:</span>
+                <span class="value text-light d-block">{{ formatTimestamp(enrichmentData!.updated_at) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container mt-3">
+          <div class="progress-bar-wrapper">
+            <div class="progress-bar" [style.width.%]="enrichmentData!.progress"></div>
+          </div>
+          <div class="progress-stats mt-2 d-flex justify-content-between text-muted">
+            <span>{{ enrichmentData!.completed_iocs }} / {{ enrichmentData!.total_iocs }} IOCs processed</span>
+            <span>{{ enrichmentData!.progress }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="results-section" *ngFor="let result of enrichmentData!.results; let i = index">
+        
+        <!-- Threat Summary Card -->
+        <div class="threat-summary glass-effect">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="severity-indicator d-flex align-items-center">
+                <div class="severity-icon me-3">⚠️</div>
+                <div class="severity-info">
+                  <span class="threat-level" [ngClass]="getSeverityClass(result.severity)">
+                    {{ result.severity.toUpperCase() }}
+                  </span>
+                  <div class="confidence-score text-muted mt-1">
+                    Confidence: {{ result.confidence_score.toFixed(1) }}/100
+                  </div>
+                  <div class="reputation-score text-muted">
+                    Reputation: {{ result.reputation_score.toFixed(1) }}/100
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ result.malware_signatures.length }}</div>
+                    <div class="stats-label text-muted">Signatures</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ result.sources.length }}</div>
+                    <div class="stats-label text-muted">Sources</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ result.reports.length }}</div>
+                    <div class="stats-label text-muted">Reports</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card feature-card" *ngIf="result.description.length > 0 || result.name.length > 0">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">Information</h5>
+  </div>
+  <div class="card-body">
+    <div class="row g-4">
+      <!-- Names Section -->
+      <div class="col-md-6">
+        <h6 class="text-info border-bottom pb-1 mb-2">Names</h6>
+        <div class="d-flex flex-wrap gap-2">
+          <span
+            class="badge bg-success text-wrap p-2"
+            *ngFor="let name of result.name"
+          >
+            {{ name }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Descriptions Section -->
+      <div class="col-md-6">
+        <h6 class="text-warning border-bottom pb-1 mb-2">Descriptions</h6>
+        <div class="d-flex flex-wrap gap-2">
+          <span
+            class="badge bg-info text-wrap p-2"
+            *ngFor="let desc of result.description"
+          >
+            {{ desc }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card feature-card" *ngIf="result.file_info">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">File Information</h5>
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>File Name:</strong> <span class="font-monospace">{{ result.file_info.file_name }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>File Size:</strong> <span class="font-monospace">{{ result.file_info.file_size | number }} bytes</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>File Type:</strong> <span class="font-monospace">{{ result.file_info.file_type }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>MIME Type:</strong> <span class="font-monospace">{{ result.file_info.mime_type }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>Reporter:</strong> <span class="font-monospace">{{ result.file_info.reporter }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>Origin Country:</strong> <span class="font-monospace">{{ result.file_info.origin_country }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>Anonymous Upload:</strong>
+        <span class="badge"
+              [ngClass]="result.file_info.anonymous ? 'bg-success' : 'bg-secondary'">
+          {{ result.file_info.anonymous ? 'Yes' : 'No' }}
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="card feature-card" *ngIf="result.hash_tools">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">Hash Tools</h5>
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>IMPHASH:</strong> <span class="font-monospace">{{ result.hash_tools.imphash }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>GIMPHASH:</strong> 
+        <span class="font-monospace">
+          {{ result.hash_tools.gimphash || 'N/A' }}
+        </span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>TELFHASH:</strong> 
+        <span class="font-monospace">
+          {{ result.hash_tools.telfhash || 'N/A' }}
+        </span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>SSDEEP:</strong> <span class="font-monospace">{{ result.hash_tools.ssdeep }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>TLSH:</strong> <span class="font-monospace">{{ result.hash_tools.tlsh }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>DHASH Icon:</strong> <span class="font-monospace">{{ result.hash_tools.dhash_icon }}</span>
+      </li>
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+        <strong>Magika:</strong> <span class="font-monospace">{{ result.hash_tools.magika }}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+<!-- TRiD Signatures -->
+<div class="card feature-card" *ngIf="result.trid.length > 0">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">TRiD Signatures</h5>
+  </div>
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-md-4 col-sm-6" *ngFor="let tridSig of result.trid">
+        <div class="badge bg-info w-100 text-wrap p-2 font-monospace">
+          {{ tridSig }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Timestamps -->
+<div class="card feature-card mt-3" *ngIf="result.timestamps">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">Timestamps</h5>
+  </div>
+  <div class="card-body text-light">
+    <div class="d-flex justify-content-between mb-2">
+      <strong>First Seen:</strong>
+      <span class="font-monospace">{{ result.timestamps.first_seen }}</span>
+    </div>
+    <div class="d-flex justify-content-between">
+      <strong>Last Seen:</strong>
+      <span class="font-monospace">
+        {{ result.timestamps.last_seen || 'N/A' }}
+      </span>
+    </div>
+  </div>
+</div>
+<!-- Code Signing -->
+<div class="card feature-card mb-3" *ngIf="result.code_signing.length > 0">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">Code Signing</h5>
+  </div>
+  <div class="card-body text-light">
+    <div class="code-signing-entry mb-3" *ngFor="let sig of result.code_signing">
+      <div class="mb-2"><strong>Subject CN:</strong> <span class="font-monospace">{{ sig.subject_cn }}</span></div>
+      <div class="mb-2"><strong>Issuer CN:</strong> <span class="font-monospace">{{ sig.issuer_cn }}</span></div>
+      <div class="mb-2"><strong>Algorithm:</strong> <span class="font-monospace">{{ sig.algorithm }}</span></div>
+      <div class="mb-2"><strong>Valid From:</strong> <span class="font-monospace">{{ sig.valid_from }}</span></div>
+      <div class="mb-2"><strong>Valid To:</strong> <span class="font-monospace">{{ sig.valid_to }}</span></div>
+      <div class="mb-2"><strong>Serial Number:</strong> <span class="font-monospace">{{ sig.serial_number }}</span></div>
+      <div class="mb-2"><strong>Thumbprint Alg:</strong> <span class="font-monospace">{{ sig.thumbprint_algorithm }}</span></div>
+      <div class="mb-2"><strong>Thumbprint:</strong> <span class="font-monospace">{{ sig.thumbprint }}</span></div>
+      <div class="mb-2"><strong>CSCB Listed:</strong> <span class="text-warning">{{ sig.cscb_listed ? 'Yes' : 'No' }}</span></div>
+      <div *ngIf="sig.cscb_reason" class="mb-2"><strong>CSCB Reason:</strong> <span class="font-monospace">{{ sig.cscb_reason }}</span></div>
+      <hr class="border-secondary" />
+    </div>
+  </div>
+</div>
+
+<!-- Delivery Method -->
+<div class="card feature-card mb-3" *ngIf="result.delivery_method">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">Delivery Method</h5>
+  </div>
+  <div class="card-body text-light">
+    <span class="badge bg-info text-dark p-2 font-monospace">{{ result.delivery_method }}</span>
+  </div>
+</div>
+
+<!-- Intelligence (Generic Viewer) -->
+<div class="card feature-card" *ngIf="result.intelligence">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">Raw Intelligence</h5>
+  </div>
+  <div class="card-body">
+    <pre class="bg-dark text-light p-3 rounded overflow-auto" style="max-height: 300px;">
+{{ result.intelligence | json }}
+    </pre>
+  </div>
+</div>
+<!-- File Info Links -->
+<div class="card feature-card mb-3" *ngIf="result.file_info_links.length > 0">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">File Info Links</h5>
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      <li 
+        class="list-group-item bg-transparent text-light" 
+        *ngFor="let link of result.file_info_links">
+        🔗 
+        <a [href]="link" class="text-info font-monospace" target="_blank" rel="noopener noreferrer">
+          {{ link }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Vendor Intel (Generic/Nested Viewer) -->
+<div class="card feature-card" *ngIf="result.vendor_intel && objectKeys(result.vendor_intel).length > 0">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">Vendor Intel</h5>
+  </div>
+  <div class="card-body">
+    <pre class="bg-dark text-light p-3 rounded overflow-auto" style="max-height: 300px;">
+{{ result.vendor_intel | json }}
+    </pre>
+  </div>
+</div>
+
+
+
+
+        <!-- Intelligence Sources -->
+        <div class="card feature-card" *ngIf="result.sources.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">Intelligence Sources</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-3 col-sm-6" *ngFor="let source of result.sources">
+                <div class="badge bg-primary w-100 p-2">{{ source }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Malware Signatures -->
+        <div class="card feature-card" *ngIf="result.malware_signatures.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">
+              Malware Signatures 
+              <span class="badge bg-danger ms-2">{{ result.malware_signatures.length }}</span>
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="signatures-container">
+              <div class="result-item d-flex align-items-center" *ngFor="let signature of result.malware_signatures">
+                <span class="signature-icon me-3">🔍</span>
+                <span class="signature-name text-light">{{ signature }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis Reports -->
+        <div class="card feature-card" *ngIf="result.reports.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">Sandbox Analysis Reports</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Environment</th>
+                    <th>Verdict</th>
+                    <th>Status</th>
+                    <th>Report ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let report of result.reports">
+                    <td class="text-light">{{ report.environment }}</td>
+                    <td>
+                      <span class="threat-level" [ngClass]="getVerdictClass(report.verdict)">
+                        {{ report.verdict.toUpperCase() }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge" [ngClass]="getStateClass(report.state)">
+                        {{ report.state }}
+                      </span>
+                    </td>
+                    <td class="font-monospace text-muted">{{ report.report_id }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Hashes -->
+        <div class="card feature-card" *ngIf="result.hashes">
+            <div class="card-header">
+                <h5 class="card-title text-light mb-0">File Hashes</h5>
+            </div>
+            <div class="card-body">
+                <div class="hashes-container">
+                <div class="result-item" *ngFor="let hash of result.hashes | keyvalue">
+                    <div class="d-flex align-items-center justify-content-between">
+                    <span class="hash-value font-monospace text-light">
+                        <strong>{{ hash.key.toUpperCase() }}:</strong> {{ hash.value }}
+                    </span>
+                    <button class="btn btn-sm btn-outline-info" (click)="copyToClipboard(hash.value)">
+                        📋 Copy
+                    </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+
+        <!-- File Tags -->
+        <div class="card feature-card" *ngIf="result.tags.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">File Tags</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-secondary" *ngFor="let tag of result.tags">{{ tag }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- YARA Rules -->
+        <!-- <div class="card feature-card" *ngIf="result.yara_rules.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">YARA Rules</h5>
+          </div>
+          <div class="card-body">
+            <div class="yara-container">
+              <div class="result-item" *ngFor="let rule of result.yara_rules">
+                <span class="rule-icon me-3">📋</span>
+                <span class="rule-name text-light font-monospace">{{ rule.name }} -{{ rule.author }} - {{ rule.description }}</span>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="card feature-card" *ngIf="result.yara_rules.length > 0">
+  <div class="card-header">
+    <h5 class="card-title text-light mb-0">YARA Rules</h5>
+  </div>
+  <div class="card-body">
+    <div class="yara-container d-flex flex-column gap-2">
+      <div
+        class="result-item d-flex align-items-start bg-dark border rounded p-2"
+        *ngFor="let rule of result.yara_rules"
+      >
+        <span class="rule-icon me-2 mt-1 text-info" title="Copy to clipboard">📋</span>
+        <div class="rule-details text-light font-monospace small">
+          <div><strong>Name:</strong> {{ rule.name }}</div>
+          <div><strong>Author:</strong> {{ rule.author }}</div>
+          <div><strong>Description:</strong> {{ rule.description }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+        <!-- Additional Information -->
+        <div class="row" *ngIf="hasAdditionalInfo(result)">
+          <div class="col-md-4" *ngIf="result.malware_families.length > 0">
+            <div class="card feature-card h-100">
+              <div class="card-header">
+                <h6 class="card-title text-light mb-0">Malware Families</h6>
+              </div>
+              <div class="card-body">
+                <div class="info-list">
+                  <div class="result-item" *ngFor="let family of result.malware_families">
+                    <span class="text-light">{{ family.id }} - {{family.display_name}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" *ngIf="result.attack_techniques.length > 0">
+            <div class="card feature-card h-100">
+              <div class="card-header">
+                <h6 class="card-title text-light mb-0">Attack Techniques</h6>
+              </div>
+              <div class="card-body">
+                <div class="info-list">
+                  <div class="result-item" *ngFor="let technique of result.attack_techniques">
+                    <span class="text-light">{{technique.display_name}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" *ngIf="result.targeted_countries.length > 0">
+            <div class="card feature-card h-100">
+              <div class="card-header">
+                <h6 class="card-title text-light mb-0">Targeted Countries</h6>
+              </div>
+              <div class="card-body">
+                <div class="info-list">
+                  <div class="result-item" *ngFor="let country of result.targeted_countries">
+                    <span class="text-light">{{ country }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- References -->
+        <div class="card feature-card" *ngIf="result.references.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">References</h5>
+          </div>
+          <div class="card-body">
+            <div class="references-container">
+              <div class="result-item" *ngFor="let reference of result.references">
+                <a [href]="reference" target="_blank" class="text-info text-decoration-none">
+                  🔗 {{ reference }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Display -->
+      <div class="alert alert-danger glass-effect" *ngIf="enrichmentData!.error">
+        <h5 class="alert-heading">⚠️ Error</h5>
+        <p class="mb-0">{{ enrichmentData!.error }}</p>
+      </div>
+
+      <!-- No Results -->
+      <div class="no-results glass-effect text-center" *ngIf="enrichmentData!.results.length === 0 && !enrichmentData!.error">
+        <div class="no-results-icon">📊</div>
+        <h4 class="text-light">No Results Available</h4>
+        <p class="text-muted">The enrichment analysis is still in progress or no data was found.</p>
+      </div>
+    </div>

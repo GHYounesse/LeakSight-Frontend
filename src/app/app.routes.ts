@@ -13,6 +13,9 @@ import { IOCCreationComponent } from './components/ioc/create/ioc-create.compone
 import { IOCListComponent } from './components/ioc/list/ioc-list.component';
 import { ViewIOCComponent } from './components/ioc/view/ioc-view.component';
 import { IOCUpdateComponent } from './components/ioc/update/ioc-update.component';
+
+import { HashEnrichmentComponent } from './components/enrichment/hash/hash-enrichment/hash-enrichment.component';
+import { FileHashResultsComponent } from './components/enrichment/hash/file-hash-results/file-hash-results.component';
 export const routes: Routes = [
 
     // Authentification ////////////////
@@ -25,6 +28,12 @@ export const routes: Routes = [
     {path:"iocs/edit/:id",component:IOCUpdateComponent,canActivate: [AuthGuard]},
     {path:"iocs/:id",component:ViewIOCComponent,canActivate: [AuthGuard]},
     {path:"iocs",component:IOCListComponent,canActivate: [AuthGuard]},
+    ////////////////// Enrichment ///////////////////
+
+    //////////Hash Enrichment //////////
+    { path: 'enrichment/hash',component:HashEnrichmentComponent,canActivate: [AuthGuard]},
+    { path:"enrichment/hash/:jobId",component:FileHashResultsComponent,canActivate: [AuthGuard]},
+    
     ///////////////////// Unauthorized //////////////////
     {path:'unauthorized',component:UnauthorizedComponent},
     ////////////// Landing Page ///////////////
