@@ -1,0 +1,122 @@
+<div class="container" id="loginContainer">
+  <div class="login-container">
+    <div class="text-center mb-4">
+      <i class="fas fa-shield-alt text-primary" style="font-size: 3rem"></i>
+      <h2 class="text-light mt-3">LeakSight</h2>
+      <p class="text-muted">Secure Login to Threat Intelligence Platform</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i>{{ errorMessage }}
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success" role="alert">
+      <i class="fas fa-check-circle me-2"></i>{{ successMessage }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="email" class="form-label text-light">Email Address</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.is-invalid]="
+            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          "
+        />
+        <div
+          *ngIf="
+            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          "
+          class="invalid-feedback"
+        >
+          <small *ngIf="loginForm.get('email')?.errors?.['required']"
+            >Email is required</small
+          >
+          <small *ngIf="loginForm.get('email')?.errors?.['email']"
+            >Please enter a valid email</small
+          >
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label text-light">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          [class.is-invalid]="
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+          "
+        />
+        <div
+          *ngIf="
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+          "
+          class="invalid-feedback"
+        >
+          <small *ngIf="loginForm.get('password')?.errors?.['required']"
+            >Password is required</small
+          >
+          <small *ngIf="loginForm.get('password')?.errors?.['minlength']"
+            >Password must be at least 6 characters</small
+          >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="mb-3 form-check">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="rememberMe"
+          formControlName="rememberMe"
+        />
+        <label class="form-check-label text-light" for="rememberMe"
+          >Remember me</label
+        >
+      </div>
+        </div>
+        <div class="col">
+          <div class="text-center">
+        <a href="/request-reset-password" class="text-primary text-decoration-none"
+          >Forgot Password?</a
+        >
+      </div>
+        </div>
+      </div>
+
+      
+
+
+      <button
+        type="submit"
+        class="btn btn-primary w-100"
+        [disabled]="loginForm.invalid || isLoading"
+      >
+        <span
+          *ngIf="isLoading"
+          class="spinner-border spinner-border-sm me-2"
+          role="status"
+        ></span>
+        <i *ngIf="!isLoading" class="fas fa-sign-in-alt me-2"></i>
+        {{ isLoading ? "Logging in..." : "Login" }}
+      </button>
+    </form>
+    <div class="text-center mt-3">
+      <p class="text-muted">
+        Don't have an account?
+        <a role="button" class="text-primary" (click)="goToRegister()">Register here</a>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,387 @@
+<section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Advanced Threat Intelligence Platform</h1>
+            <p class="hero-subtitle">
+                Monitor, detect, and analyze cyber threats in real-time. Track IP addresses, file hashes, 
+                emails, domains, and Telegram channels for potential data leaks and security breaches.
+            </p>
+            <div class="hero-cta">
+                <a href="#demo" class="btn-hero">Try Demo</a>
+                <a href="#features" class="btn-outline-hero">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title">Comprehensive Threat Intelligence</h2>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3 class="feature-title">IP Address Lookup</h3>
+                        <p class="feature-description">
+                            Comprehensive IP intelligence including geolocation, reputation scores, 
+                            threat indicators, and historical data from multiple threat feeds.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <h3 class="feature-title">File Hash Analysis</h3>
+                        <p class="feature-description">
+                            Instant malware detection using MD5, SHA1, and SHA256 hashes. 
+                            Get detailed analysis from multiple antivirus engines and threat databases.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3 class="feature-title">Email Intelligence</h3>
+                        <p class="feature-description">
+                            Investigate email addresses for breach involvement, reputation status, 
+                            and associated threat activities across dark web sources.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3 class="feature-title">Domain Monitoring</h3>
+                        <p class="feature-description">
+                            Track domain reputation, DNS records, SSL certificates, and identify 
+                            potentially malicious or suspicious domain activities.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <h3 class="feature-title">Username Tracking</h3>
+                        <p class="feature-description">
+                            Monitor usernames across multiple platforms and dark web forums 
+                            for potential data breaches and identity exposure.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h3 class="feature-title">Telegram Monitoring</h3>
+                        <p class="feature-description">
+                            Real-time monitoring of Telegram channels and groups for data leaks, 
+                            stolen credentials, and cybercriminal activities.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title">Interactive Demo</h2>
+            <div class="demo-interface">
+                <ul class="nav nav-tabs lookup-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#ip-lookup">IP Lookup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#hash-lookup">File Hash</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#email-lookup">Email</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#domain-lookup">Domain</a>
+                    </li>
+                </ul>
+                
+                <div class="tab-content">
+                    <div class="tab-pane active" id="ip-lookup">
+                        <div class="lookup-content">
+                            <h4 class="text-light mb-3">IP Address Intelligence</h4>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Enter IP address (e.g., 8.8.8.8)" value="192.168.1.1">
+                                <button class="btn btn-primary" onclick="performLookup('ip')">
+                                    <i class="fas fa-search me-2"></i>Lookup
+                                </button>
+                            </div>
+                            <div class="demo-result">
+                                <div class="result-header">
+                                    <h5 class="text-light">192.168.1.1</h5>
+                                    <span class="threat-level low">Low Risk</span>
+                                </div>
+                                <div class="result-details">
+                                    <p><strong>Detection:</strong> Malware Detected</p>
+                                    <p><strong>Type:</strong> Trojan.Win32.Agent</p>
+                                    <p><strong>Engines:</strong> 42/67 detected</p>
+                                    <p><strong>First Seen:</strong> 2024-01-15</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="email-lookup">
+                        <div class="lookup-content">
+                            <h4 class="text-light mb-3">Email Intelligence</h4>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Enter email address">
+                                <button class="btn btn-primary" onclick="performLookup('email')">
+                                    <i class="fas fa-search me-2"></i>Investigate
+                                </button>
+                            </div>
+                            <div class="demo-result" style="display: none;">
+                                <div class="result-header">
+                                    <h5 class="text-light">Email Investigation</h5>
+                                    <span class="threat-level medium">Medium Risk</span>
+                                </div>
+                                <div class="result-details">
+                                    <p><strong>Breach Status:</strong> Found in 3 breaches</p>
+                                    <p><strong>Latest Breach:</strong> DataCorp (2024-02-10)</p>
+                                    <p><strong>Reputation:</strong> Suspicious</p>
+                                    <p><strong>Dark Web:</strong> Credentials found</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="domain-lookup">
+                        <div class="lookup-content">
+                            <h4 class="text-light mb-3">Domain Analysis</h4>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Enter domain name">
+                                <button class="btn btn-primary" onclick="performLookup('domain')">
+                                    <i class="fas fa-search me-2"></i>Analyze
+                                </button>
+                            </div>
+                            <div class="demo-result" style="display: none;">
+                                <div class="result-header">
+                                    <h5 class="text-light">Domain Analysis</h5>
+                                    <span class="threat-level info">Information</span>
+                                </div>
+                                <div class="result-details">
+                                    <p><strong>Registration:</strong> 2023-05-12</p>
+                                    <p><strong>Registrar:</strong> GoDaddy</p>
+                                    <p><strong>SSL Status:</strong> Valid Certificate</p>
+                                    <p><strong>Reputation:</strong> Clean</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Telegram Monitoring Section -->
+                <div class="telegram-monitor">
+                    <h4 class="text-light mb-3">
+                        <i class="fab fa-telegram me-2"></i>Telegram Leak Monitoring
+                    </h4>
+                    <div class="monitoring-status">
+                        <div class="status-indicator status-active"></div>
+                        <span class="text-light">Monitoring 47 channels for data leaks</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stats-card">
+                                <div class="stats-number">1,247</div>
+                                <div class="text-muted">Channels Monitored</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stats-card">
+                                <div class="stats-number">89</div>
+                                <div class="text-muted">Leaks Detected Today</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="leak-alert">
+                        <div class="alert-header">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Recent Leak Alert
+                        </div>
+                        <div class="alert-content">
+                            <strong>Channel:</strong> databreach_market<br>
+                            <strong>Content:</strong> 50K+ credit card numbers from major retailer<br>
+                            <strong>Time:</strong> 2 hours ago<br>
+                            <strong>Severity:</strong> High
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Real-Time Threat Intelligence</h2>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-number">2.4M+</div>
+                        <div class="text-muted">IPs Analyzed</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-number">856K+</div>
+                        <div class="text-muted">File Hashes Checked</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-number">1.2M+</div>
+                        <div class="text-muted">Emails Investigated</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-number">45K+</div>
+                        <div class="text-muted">Domains Monitored</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <span class="navbar-brand">
+                        <i class="fas fa-shield-alt me-2"></i>LeakSight
+                    </span>
+                    <p class="text-muted mt-2">Advanced Threat Intelligence Platform</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#terms">Terms of Service</a>
+                    <a href="#docs">Documentation</a>
+                    <a href="#support">Support</a>
+                    <a href="#about">About</a>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1);">
+            <div class="text-center">
+                <p class="text-muted">&copy; 2024 LeakSight. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+<script>
+        // Demo functionality
+        function performLookup(type) {
+            const resultDiv = document.querySelector(`#${type}-lookup .demo-result`);
+            const button = document.querySelector(`#${type}-lookup .btn`);
+            
+            // Show loading state
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+            button.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                resultDiv.style.display = 'block';
+                button.innerHTML = `<i class="fas fa-search me-2"></i>${type === 'ip' ? 'Lookup' : type === 'hash' ? 'Analyze' : 'Investigate'}`;
+                button.disabled = false;
+            }, 1500);
+        }
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Counter animation for stats
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    start = target;
+                    clearInterval(timer);
+                }
+                element.textContent = formatNumber(Math.floor(start));
+            }, 16);
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M+';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K+';
+            }
+            return num.toString();
+        }
+        
+        // Intersection Observer for counter animation
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statsNumbers = entry.target.querySelectorAll('.stats-number');
+                    const targets = [2400000, 856000, 1200000, 45000]; // Example targets
+                    
+                    statsNumbers.forEach((element, index) => {
+                        if (targets[index]) {
+                            animateCounter(element, targets[index]);
+                        }
+                    });
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe stats section
+        const statsSection = document.querySelector('.features-section:nth-of-type(3)');
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
+        
+        // Real-time updates simulation
+        setInterval(() => {
+            const leakCount = document.querySelector('.telegram-monitor .stats-number:last-child');
+            if (leakCount) {
+                let current = parseInt(leakCount.textContent);
+                if (Math.random() < 0.1) { // 10% chance to increment
+                    leakCount.textContent = current + 1;
+                }
+            }
+        }, 30000);
+
+    </script>

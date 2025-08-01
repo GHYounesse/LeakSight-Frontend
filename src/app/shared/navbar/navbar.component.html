@@ -1,0 +1,391 @@
+<!-- 
+
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container-fluid">
+   
+    
+     <a class="navbar-brand" [routerLink]="['/dashboard']">
+      <img src="logo.png" width="200" height="65" alt="LeakSight">
+    </a>
+
+    
+
+    
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      (click)="toggleNavbar()"
+      [attr.aria-expanded]="isNavbarOpen"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    
+    <div
+      class="collapse navbar-collapse"
+      id="navbarNav"
+      [class.show]="isNavbarOpen"
+    >
+      
+      <ul class="navbar-nav me-auto">
+        <li
+          *ngFor="let item of navItems"
+          class="nav-item"
+          [class.dropdown]="item.children"
+        >
+          
+          <ng-container *ngIf="item.children; else singleItem">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              [class.active]="isParentActive(item)"
+              (click)="$event.preventDefault()"
+            >
+              <i [class]="item.icon"></i>
+              {{ item.label }}
+              <span
+                *ngIf="item.badge"
+                class="notification-badge"
+              >
+                {{ item.badge }}
+              </span>
+            </a>
+            <ul class="dropdown-menu">
+              <li *ngFor="let child of item.children">
+                <a
+                  class="dropdown-item"
+                  [routerLink]="child.path"
+                  routerLinkActive="active"
+                  (click)="navigateTo(child.path)"
+                >
+                  <i [class]="child.icon"></i>
+                  {{ child.label }}
+                </a>
+              </li>
+            </ul>
+          </ng-container>
+
+          
+          <ng-template #singleItem>
+            <a
+              class="nav-link"
+              [routerLink]="item.path"
+              routerLinkActive="active"
+              (click)="navigateTo(item.path)"
+            >
+              <i [class]="item.icon"></i>
+              {{ item.label }}
+              <span
+                *ngIf="item.badge"
+                class="notification-badge"
+              >
+                {{ item.badge }}
+              </span>
+            </a>
+          </ng-template>
+        </li>
+      </ul>
+
+      
+      <div class="mobile-nav-section d-lg-none">
+        <h6>Export & Reports</h6>
+        <ul class="navbar-nav">
+          <li *ngFor="let exportItem of exportItems" class="nav-item">
+            <a
+              class="nav-link"
+              href="#"
+              (click)="onExportClick(exportItem.label); $event.preventDefault()"
+            >
+              <i [class]="exportItem.icon"></i>
+              {{ exportItem.label }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      
+      <ul class="navbar-nav ms-auto">
+        
+        <li class="nav-item d-none d-md-block">
+          <span class="navbar-text">
+            <span
+              class="status-indicator"
+              [class.online]="systemOnline"
+              [class.offline]="!systemOnline"
+            ></span>
+            {{ systemOnline ? 'System Online' : 'System Offline' }}
+          </span>
+        </li>
+
+                 <li class="nav-item dropdown d-none d-lg-block">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            (click)="$event.preventDefault()"
+          >
+            <i class="fas fa-download"></i>
+            Export
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li *ngFor="let exportItem of exportItems">
+              <a
+                class="dropdown-item"
+                href="#"
+                (click)="onExportClick(exportItem.label); $event.preventDefault()"
+              >
+                <i [class]="exportItem.icon"></i>
+                {{ exportItem.label }}
+              </a>
+            </li>
+          </ul>
+        </li> 
+
+        
+        <li class="nav-item dropdown" *ngIf="isUserLoggedIn">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            (click)="$event.preventDefault()"
+          >
+            <div class="user-avatar">{{ userInitial }}</div>
+            <span class="d-none d-md-inline">{{ username }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li *ngFor="let menuItem of userMenuItems">
+              <a
+                class="dropdown-item"
+                [routerLink]="menuItem.path"
+                (click)="navigateTo(menuItem.path)"
+              >
+                <i [class]="menuItem.icon"></i>
+                {{ menuItem.label }}
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="#"
+                (click)="logout($event)"
+              >
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        
+        <li class="nav-item" *ngIf="!isUserLoggedIn">
+          <a class="nav-link" [routerLink]="['/login']">
+            <i class="fas fa-sign-in-alt"></i>
+            Login
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav> -->
+
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container-fluid">
+    <!-- Brand -->
+    <a class="navbar-brand" [routerLink]="isUserLoggedIn ? ['/dashboard'] : ['/home']">
+      <img src="logo.png" width="200" height="65" alt="LeakSight">
+    </a>
+
+    <!-- Mobile Toggle -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      (click)="toggleNavbar()"
+      [attr.aria-expanded]="isNavbarOpen"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation -->
+    <div
+      class="collapse navbar-collapse"
+      id="navbarNav"
+      [class.show]="isNavbarOpen"
+    >
+      <!-- Main Navigation - Only show if items are available -->
+      <ul class="navbar-nav me-auto" *ngIf="getVisibleNavItems().length > 0">
+        <li
+          *ngFor="let item of getVisibleNavItems()"
+          class="nav-item"
+          [class.dropdown]="item.children && item.children.length > 0"
+        >
+          <!-- Items with children (dropdown) -->
+          <ng-container *ngIf="item.children && item.children.length > 0; else singleItem">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              [class.active]="isParentActive(item)"
+              (click)="$event.preventDefault()"
+            >
+              <i [class]="item.icon"></i>
+              {{ item.label }}
+              <span
+                *ngIf="item.badge && item.badge > 0"
+                class="notification-badge"
+              >
+                {{ item.badge }}
+              </span>
+            </a>
+            <ul class="dropdown-menu">
+              <li *ngFor="let child of item.children">
+                <a
+                  class="dropdown-item"
+                  [routerLink]="child.path"
+                  routerLinkActive="active"
+                  (click)="navigateTo(child.path)"
+                >
+                  <i [class]="child.icon"></i>
+                  {{ child.label }}
+                </a>
+              </li>
+            </ul>
+          </ng-container>
+
+          <!-- Single items -->
+          <ng-template #singleItem>
+            <a
+              class="nav-link"
+              [routerLink]="item.path"
+              routerLinkActive="active"
+              (click)="navigateTo(item.path)"
+            >
+              <i [class]="item.icon"></i>
+              {{ item.label }}
+              <span
+                *ngIf="item.badge && item.badge > 0"
+                class="notification-badge"
+              >
+                {{ item.badge }}
+              </span>
+            </a>
+          </ng-template>
+        </li>
+      </ul>
+
+      <!-- Mobile Export Section - Only show if logged in -->
+      <div class="mobile-nav-section d-lg-none" *ngIf="isUserLoggedIn && getVisibleExportItems().length > 0">
+        <h6>Export & Reports</h6>
+        <ul class="navbar-nav">
+          <li *ngFor="let exportItem of getVisibleExportItems()" class="nav-item">
+            <a
+              class="nav-link"
+              href="#"
+              (click)="onExportClick(exportItem.label); $event.preventDefault()"
+            >
+              <i [class]="exportItem.icon"></i>
+              {{ exportItem.label }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- User Section -->
+      <ul class="navbar-nav ms-auto">
+        <!-- System Status - Only show if logged in -->
+        <li class="nav-item d-none d-md-block" *ngIf="isUserLoggedIn">
+          <span class="navbar-text">
+            <span
+              class="status-indicator"
+              [class.online]="systemOnline"
+              [class.offline]="!systemOnline"
+            ></span>
+            {{ systemOnline ? 'System Online' : 'System Offline' }}
+          </span>
+        </li>
+
+        <!-- Export Dropdown (Desktop Only) - Only show if logged in -->
+        <li class="nav-item dropdown d-none d-lg-block" *ngIf="isUserLoggedIn && getVisibleExportItems().length > 0">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            (click)="$event.preventDefault()"
+          >
+            <i class="fas fa-download"></i>
+            Export
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li *ngFor="let exportItem of getVisibleExportItems()">
+              <a
+                class="dropdown-item"
+                href="#"
+                (click)="onExportClick(exportItem.label); $event.preventDefault()"
+              >
+                <i [class]="exportItem.icon"></i>
+                {{ exportItem.label }}
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- User Profile - Only show if logged in -->
+        <li class="nav-item dropdown" *ngIf="isUserLoggedIn">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            (click)="$event.preventDefault()"
+          >
+            <div class="user-avatar">{{ userInitial }}</div>
+            <span class="d-none d-md-inline">{{ username }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li *ngFor="let menuItem of getVisibleUserMenuItems()">
+              <a
+                class="dropdown-item"
+                [routerLink]="menuItem.path"
+                (click)="navigateTo(menuItem.path)"
+              >
+                <i [class]="menuItem.icon"></i>
+                {{ menuItem.label }}
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="#"
+                (click)="logout($event)"
+              >
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Login Link - Only show if not logged in -->
+        <li class="nav-item" *ngIf="!isUserLoggedIn && !isLoginPage()">
+          <a class="nav-link" [routerLink]="['/login']">
+            <i class="fas fa-sign-in-alt"></i>
+            Login
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

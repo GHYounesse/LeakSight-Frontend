@@ -1,0 +1,17 @@
+$primary-color: #1a1a2e;
+    $secondary-color: #16213e;
+    $accent-color: #0f3460;
+    $danger-color: #e94560;
+    $warning-color: #f39c12;
+    $success-color: #27ae60;
+    $info-color: #3498db;
+
+
+
+
+body {
+    background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 76px;
+}
