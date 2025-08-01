@@ -1,59 +1,77 @@
-# TIM
+# LeakSight Frontend 🛡️  
+**Threat Intelligence Monitoring UI**
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
+This is the Angular frontend for **LeakSight**, a platform for monitoring and enriching threat intelligence indicators. It currently includes authentication, core services, IOC management, and enrichment modules for IPs, domains, URLs, and file hashes.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🚀 Overview
+
+LeakSight helps cybersecurity professionals monitor, enrich, and manage Indicators of Compromise (IOCs) with real-time intelligence.
+
+### 🔐 Authentication (`/auth`)
+- Secure login using JWT tokens  
+- AuthGuard protection for restricted routes  
+- Session handling via HTTP interceptors  
+
+### ⚙️ Core Services (`/core`)
+- API communication and configuration  
+- JWT token interception  
+- Global error handling  
+
+### 🧠 IOC Management (`/ioc`)
+- Create, read, update, delete Indicators of Compromise  
+- IOC types may include hashes, IPs, URLs, and domains  
+- Clean UI for managing threat entries  
+
+### 🛰️ IOC Enrichment (`/enrichment`)
+- Query real-time threat data from third-party APIs  
+- View enrichment results by job ID  
+- Modules:  
+  - `/enrichment/ip`  
+  - `/enrichment/url`  
+  - `/enrichment/domain`  
+  - `/enrichment/hash`
+
+---
+
+## 📂 Project Structure
+```css
+src/
+├── app/
+│ ├── auth/ # Authentication services & components
+│ ├── core/ # Interceptors, guards, base services 
+| ├── components/ # Core components
+| |     ├── ioc/ # IOC CRUD views and services
+│ |     └── enrichment/ # Threat data enrichment by IOC type
+| ├── services/ # Shared services
+| └── shared/ # Shared modules
+└── assets/ # Static assets
+```
+## 📦 Tech Stack
+
+- Angular  19  
+- RxJS  
+- Angular Forms  
+- JWT-based Auth  
+- SCSS or Tailwind (optional)  
+- ApexCharts or raw Chart.js (optional)
+
+---
+
+## 🔧 Setup & Run
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/GHYounesse/LeakSight-Frontend.git
+cd LeakSight-Frontend
+npm install
+```
+
+### 2. Start the development server
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
