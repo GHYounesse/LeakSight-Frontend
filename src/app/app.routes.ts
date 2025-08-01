@@ -22,6 +22,9 @@ import { IPResultsComponent } from './components/enrichment/ip/ip-results/ip-res
 
 import { UrlEnrichmentComponent } from './components/enrichment/url/url-enrichment/url-enrichment.component';
 import { UrlResultsComponent } from './components/enrichment/url/url-results/url-results.component';
+
+import { DomainEnrichmentComponent } from './components/enrichment/domain/domain-enrichment/domain-enrichment.component';
+import { DomainResultsComponent } from './components/enrichment/domain/domain-results/domain-results.component';
 export const routes: Routes = [
 
     // Authentification ////////////////
@@ -46,7 +49,10 @@ export const routes: Routes = [
     //////////URL Enrichment //////////
     {path:'enrichment/url',component:UrlEnrichmentComponent,canActivate: [AuthGuard]},
     { path:"enrichment/url/:jobId",component:UrlResultsComponent,canActivate: [AuthGuard]},
-    
+    //////////Domain Enrichment //////////
+    {path:'enrichment/domain',component:DomainEnrichmentComponent,canActivate: [AuthGuard]},
+    { path:"enrichment/domain/:jobId",component:DomainResultsComponent,canActivate: [AuthGuard]},
+
     ///////////////////// Unauthorized //////////////////
     {path:'unauthorized',component:UnauthorizedComponent},
     ////////////// Landing Page ///////////////
