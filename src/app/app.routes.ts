@@ -19,6 +19,9 @@ import { FileHashResultsComponent } from './components/enrichment/hash/file-hash
 
 import { IpEnrichmentComponent } from './components/enrichment/ip/ip-enrichment/ip-enrichment.component';
 import { IPResultsComponent } from './components/enrichment/ip/ip-results/ip-results.component';
+
+import { UrlEnrichmentComponent } from './components/enrichment/url/url-enrichment/url-enrichment.component';
+import { UrlResultsComponent } from './components/enrichment/url/url-results/url-results.component';
 export const routes: Routes = [
 
     // Authentification ////////////////
@@ -39,6 +42,10 @@ export const routes: Routes = [
     //////////IP Enrichment //////////
     {path:'enrichment/ip',component:IpEnrichmentComponent,canActivate: [AuthGuard]},
     { path:"enrichment/ip/:jobId",component:IPResultsComponent,canActivate: [AuthGuard]},
+
+    //////////URL Enrichment //////////
+    {path:'enrichment/url',component:UrlEnrichmentComponent,canActivate: [AuthGuard]},
+    { path:"enrichment/url/:jobId",component:UrlResultsComponent,canActivate: [AuthGuard]},
     
     ///////////////////// Unauthorized //////////////////
     {path:'unauthorized',component:UnauthorizedComponent},
