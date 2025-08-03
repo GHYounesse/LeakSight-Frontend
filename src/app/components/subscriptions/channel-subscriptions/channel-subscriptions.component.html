@@ -1,0 +1,201 @@
+<div class="cyber-subscriptions-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="main-title">
+          <span class="icon">🛡️</span>
+          Channel Monitoring
+        </h1>
+        <p class="subtitle">Manage your cybersecurity intelligence subscriptions</p>
+      </div>
+      <button 
+        class="btn btn-primary add-btn"
+        (click)="startNew()"
+        [disabled]="isEditing">
+        <span class="icon">➕</span>
+        New Subscription
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading subscriptions...</p>
+  </div>
+
+  <!-- Edit/Create Form -->
+  <div *ngIf="isEditing" class="form-container">
+    <div class="form-card">
+      <div class="form-header">
+        <h3>{{ editingIndex >= 0 ? 'Edit' : 'Create' }} Subscription</h3>
+        <button class="btn-close" (click)="cancelEdit()">✕</button>
+      </div>
+      
+      <form [formGroup]="subscriptionForm" (ngSubmit)="saveSubscription()">
+        <!-- Channel Username -->
+        <div class="form-group">
+          <label for="channel_username">Channel Username</label>
+          <input 
+            id="channel_username"
+            type="text" 
+            formControlName="channel_username"
+            placeholder="@breachdetector"
+            class="form-input">
+          <small class="form-hint">Must start with  symbol</small>
+        </div>
+
+        <!-- Keywords Section -->
+        <div class="keywords-section">
+          <div class="keywords-header">
+            <label>Keywords to Monitor</label>
+            <button 
+              type="button" 
+              class="btn btn-secondary btn-sm"
+              (click)="addKeyword()">
+              Add Keyword
+            </button>
+          </div>
+
+          <!-- Suggested Keywords -->
+          <div class="suggested-keywords">
+            <span class="suggested-label">Quick Add:</span>
+            <div class="keyword-tags">
+              <button 
+                *ngFor="let suggestion of suggestedKeywords.slice(0, 8)"
+                type="button"
+                class="keyword-tag"
+                (click)="addSuggestedKeyword(suggestion)">
+                {{ suggestion }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Keywords List -->
+          <div formArrayName="keywords" class="keywords-list">
+            <div 
+              *ngFor="let keywordGroup of keywordsArray.controls; let i = index"
+              class="keyword-item"
+              [formGroupName]="i">
+              
+              <div class="keyword-input-group">
+                <input 
+                  type="text" 
+                  formControlName="keyword"
+                  placeholder="Enter keyword..."
+                  class="keyword-input">
+                
+                <div class="keyword-options">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="case_sensitive">
+                    <span class="checkmark"></span>
+                    Case Sensitive
+                  </label>
+                  
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="regex">
+                    <span class="checkmark"></span>
+                    Regex
+                  </label>
+                </div>
+                
+                <button 
+                  type="button" 
+                  class="btn-remove"
+                  (click)="removeKeyword(i)"
+                  [disabled]="keywordsArray.length <= 1">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="cancelEdit()">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="!subscriptionForm.valid || keywordsArray.length == 0 || loading">
+            {{ editingIndex >= 0 ? 'Update' : 'Create' }} Subscription
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Subscriptions List -->
+  <div *ngIf="!loading && !isEditing" class="subscriptions-grid">
+    <div 
+      *ngFor="let subscription of subscriptions; let i = index"
+      class="subscription-card">
+      
+      <div class="card-header">
+        <div class="channel-info">
+          <span class="channel-icon">📡</span>
+          <div>
+            <h3 class="channel-name">{{ getChannelDisplayName(subscription.channel_username) }}</h3>
+            <p class="channel-username">{{ subscription.channel_username }}</p>
+          </div>
+        </div>
+        
+        <div class="card-actions">
+          <button 
+            class="btn-icon btn-edit"
+            (click)="startEdit(subscription, i)"
+            title="Edit subscription">
+            ✏️
+          </button>
+          <button 
+            class="btn-icon btn-delete"
+            (click)="deleteSubscription(i)"
+            title="Delete subscription">
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <div class="keywords-display">
+        <div class="keywords-count">
+          <span class="count-badge">{{ subscription.keywords.length }}</span>
+          <span>Keywords</span>
+        </div>
+        
+        <div class="keywords-tags">
+          <span 
+            *ngFor="let keyword of subscription.keywords"
+            class="keyword-display-tag"
+            [title]="getKeywordTypeTooltip(keyword)">
+            <span class="keyword-type-icon">{{ getKeywordTypeIcon(keyword) }}</span>
+            {{ keyword.keyword }}
+          </span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="status-indicator active">
+          <span class="status-dot"></span>
+          Active Monitoring
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !isEditing && subscriptions.length === 0" class="empty-state">
+    <div class="empty-icon">🔍</div>
+    <h3>No Subscriptions Yet</h3>
+    <p>Start monitoring cybersecurity channels by creating your first subscription.</p>
+    <button class="btn btn-primary" (click)="startNew()">
+      <span class="icon">➕</span>
+      Create First Subscription
+    </button>
+  </div>
+</div>
