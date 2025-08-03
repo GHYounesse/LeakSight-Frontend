@@ -53,6 +53,10 @@ export const routes: Routes = [
     {path:'enrichment/domain',component:DomainEnrichmentComponent,canActivate: [AuthGuard]},
     { path:"enrichment/domain/:jobId",component:DomainResultsComponent,canActivate: [AuthGuard]},
 
+
+
+    /////////////////////// RSS Feeds ///////////////////
+    {path:'feeds',component:ThreatFeedsComponent,canActivate: [AuthGuard]},
     ///////////////////// Unauthorized //////////////////
     {path:'unauthorized',component:UnauthorizedComponent},
     ////////////// Landing Page ///////////////

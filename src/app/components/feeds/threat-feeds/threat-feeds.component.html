@@ -1,0 +1,168 @@
+<div class="threat-feeds-container">
+      <!-- Control Panel -->
+      <div class="control-panel">
+        <!-- Search Bar -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Search in title or description..."
+              [(ngModel)]="searchQuery"
+              (input)="onSearchChange()"
+              (keyup.enter)="onFilterChange()"
+            >
+            <button 
+              *ngIf="searchQuery" 
+              class="clear-search-btn" 
+              (click)="clearSearch()"
+              title="Clear search"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <div class="filters">
+          <select 
+            class="filter-select" 
+            [(ngModel)]="selectedPriority" 
+            (change)="onFilterChange()"
+          >
+            <option value="">All Priorities</option>
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+            <option value="Information">Information</option>
+          </select>
+          
+          <select 
+            class="filter-select" 
+            [(ngModel)]="selectedSource" 
+            (change)="onFilterChange()"
+          >
+            <option value="">All Sources</option>
+            <option *ngFor="let source of uniqueSources" [value]="source">
+              {{ source }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="stats">
+          <div class="stat-card">
+            <span class="stat-number">{{ searchQuery  ?   filteredCount :totalFeeds }}</span>
+            <span class="stat-label">{{ searchQuery ? 'Filtered' : 'Total' }} Feeds</span>
+          </div>
+          <div class="stat-card high">
+            <span class="stat-number">{{  priorityCount['High'] || 0 }}</span>
+            <span class="stat-label">High Priority</span>
+          </div>
+          <div class="stat-card medium">
+            <span class="stat-number">{{  priorityCount['Medium'] || 0 }}</span>
+            <span class="stat-label">Medium</span>
+          </div>
+        </div>
+        
+        <button class="refresh-btn" (click)="refreshFeeds()" [disabled]="isLoading">
+          <span class="refresh-icon" [class.spinning]="isLoading">⟳</span>
+          Refresh
+        </button>
+      </div>
+
+      <!-- Search Results Info -->
+      <div *ngIf="searchQuery && !isLoading" class="search-results-info">
+        <span class="results-text">
+          Found {{ filteredCount }} result{{ filteredCount !== 1 ? 's' : '' }} 
+          for "<strong>{{ searchQuery }}</strong>"
+        </span>
+        <button class="clear-all-btn" (click)="clearAllFilters()">
+          Clear all filters
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading threat intelligence feeds...</p>
+      </div>
+
+      <!-- Feeds Grid -->
+      <div *ngIf="!isLoading && feeds.length > 0" class="feeds-grid">
+        <div 
+          *ngFor="let feed of feeds; trackBy: trackByFeedId" 
+          class="feed-card"
+          [class]="'priority-' + feed.priority.toLowerCase()"
+        >
+          <!-- Priority Badge -->
+          <div class="priority-badge" [class]="'priority-' + feed.priority.toLowerCase()">
+            <span class="priority-icon">
+              {{ getPriorityIcon(feed.priority) }}
+            </span>
+            {{ feed.priority }}
+          </div>
+
+          <!-- Source Badge -->
+          <div class="source-badge">
+            {{ feed.source }}
+          </div>
+
+          <!-- Content -->
+          <div class="feed-content">
+            <h3 class="feed-title" [innerHTML]="highlightSearchTerm(feed.title)"></h3>
+            <p class="feed-summary" [innerHTML]="highlightSearchTerm(feed.summary)"></p>
+            
+            <div class="feed-meta">
+              <span class="published-date">
+                <span class="date-icon">📅</span>
+                {{ formatDate(feed.publishedDate) }}
+              </span>
+              <span class="categories" *ngIf="feed.categories.length > 0">
+                <span *ngFor="let category of feed.categories.slice(0, 3)" class="category-tag">
+                  {{ category }}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="feed-actions">
+            <button class="action-btn view-btn" (click)="openLink(feed.link)">
+              <span class="btn-icon">👁</span>
+              View
+            </button>
+            <button class="action-btn share-btn" (click)="copyLink(feed.link)">
+              <span class="btn-icon">📋</span>
+              Copy
+            </button>
+          </div>
+
+          <!-- Threat Level Indicator -->
+          <div class="threat-indicator" [class]="'threat-' + feed.priority.toLowerCase()"></div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && feeds.length === 0" class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h3>{{ searchQuery ? 'No Results Found' : 'No Threat Intelligence Found' }}</h3>
+        <p>
+          {{ searchQuery 
+            ? 'No feeds match your search query and filters. Try different keywords or clear your filters.' 
+            : 'No feeds match your current filters. Try adjusting your search criteria.' 
+          }}
+        </p>
+        <div class="empty-actions">
+          <button *ngIf="searchQuery" class="refresh-btn" (click)="clearSearch()">Clear Search</button>
+          <button class="refresh-btn" (click)="clearAllFilters()">Clear All Filters</button>
+        </div>
+      </div>
+
+      <!-- Load More -->
+      <div *ngIf="feeds.length > 0 && feeds.length < totalFeeds" class="load-more-container">
+        <button class="load-more-btn" (click)="loadMore()" [disabled]="isLoadingMore">
+          <span *ngIf="!isLoadingMore">Load More Feeds</span>
+          <span *ngIf="isLoadingMore" class="loading-text">Loading...</span>
+        </button>
+      </div>
+    </div>

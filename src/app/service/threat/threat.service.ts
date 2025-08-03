@@ -61,6 +61,17 @@ export class ThreatService {
     return this.http.get(url);
   }
 
+
+  manageFeed(url: string): Observable<FeedsResponse> {
+    console.log("Url:",url);
+    return this.http.get<FeedsResponse>(url).pipe(
+      catchError((err) => {
+        console.error('Failed to fetch feeds:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
   
   
   
