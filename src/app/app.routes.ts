@@ -27,6 +27,8 @@ import { DomainEnrichmentComponent } from './components/enrichment/domain/domain
 import { DomainResultsComponent } from './components/enrichment/domain/domain-results/domain-results.component';
 import { ThreatFeedsComponent } from './components/feeds/threat-feeds/threat-feeds.component';
 import { ChannelSubscriptionsComponent } from './components/subscriptions/channel-subscriptions/channel-subscriptions.component';
+import { ThreatChartsComponent } from './components/dashboard/threat-charts/threat-charts.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 export const routes: Routes = [
 
     // Authentification ////////////////
@@ -62,6 +64,9 @@ export const routes: Routes = [
 
     ////////////////// Channel Subscriptions /////////////
     {path:'subscriptions',component:ChannelSubscriptionsComponent,canActivate: [AuthGuard]},
+
+    /////////////////////// Dashboard ///////////////////
+    {path:'dashboard',component:DashboardComponent,canActivate: [AuthGuard]},
     ///////////////////// Unauthorized //////////////////
     {path:'unauthorized',component:UnauthorizedComponent},
     ////////////// Landing Page ///////////////

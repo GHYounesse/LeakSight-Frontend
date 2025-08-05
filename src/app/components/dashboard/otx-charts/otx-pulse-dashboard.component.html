@@ -1,0 +1,241 @@
+<div class="otx-dashboard">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        <i class="fas fa-shield-alt"></i>
+        OTX Pulse Intelligence Dashboard
+      </h1>
+      <div class="header-actions">
+        <button 
+          class="btn btn-primary" 
+          (click)="refreshData()" 
+          [disabled]="isLoading">
+          <i class="fas fa-refresh" [class.spinning]="isLoading"></i>
+          Refresh
+        </button>
+        <button 
+          class="btn btn-secondary" 
+          (click)="clearCache()" 
+          [disabled]="isLoading">
+          <i class="fas fa-trash"></i>
+          Clear Cache
+        </button>
+        <button 
+          class="btn btn-success" 
+          (click)="exportData()" 
+          [disabled]="!insights">
+          <i class="fas fa-download"></i>
+          Export
+        </button>
+      </div>
+    </div>
+    
+    
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-label">Last Updated:</span>
+        <span class="status-value">{{ getTimeSinceUpdate() }}</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Cache Status:</span>
+        <span class="status-value" [class]="metrics.cacheStatus.toLowerCase()">
+          {{ metrics.cacheStatus }}
+        </span>
+      </div>
+      <div class="status-item" *ngIf="insights?._cache_info?.will_expire_at">
+        <span class="status-label">Cache Expires:</span>
+        <span class="status-value">{{ getCacheExpiryTime() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+    </div>
+    <p class="loading-text">Loading OTX pulse insights...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <div class="error-content">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>Error Loading Data</h3>
+      <p>{{ error }}</p>
+      <button class="btn btn-primary" (click)="refreshData()">
+        <i class="fas fa-retry"></i>
+        Try Again
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="insights && !isLoading" class="dashboard-content">
+    
+    <!-- Metrics Overview -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon">
+          <i class="fas fa-database"></i>
+        </div>
+        <div class="metric-content">
+          <div class="metric-value">{{ formatNumber(metrics.totalPulses) }}</div>
+          <div class="metric-label">Total Pulses</div>
+        </div>
+      </div>
+      
+      <div class="metric-card">
+        <div class="metric-icon">
+          <i class="fas fa-bullseye"></i>
+        </div>
+        <div class="metric-content">
+          <div class="metric-value">{{ formatNumber(metrics.totalIndicators) }}</div>
+          <div class="metric-label">Total Indicators</div>
+        </div>
+      </div>
+      
+      <div class="metric-card">
+        <div class="metric-icon">
+          <i class="fas fa-virus"></i>
+        </div>
+        <div class="metric-content">
+          <div class="metric-value">{{ metrics.topMalwareFamily }}</div>
+          <div class="metric-label">Top Malware Family</div>
+        </div>
+      </div>
+      
+      <div class="metric-card">
+        <div class="metric-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="metric-content">
+          <div class="metric-value">{{ formatNumber(metrics.averageSubscribers) }}</div>
+          <div class="metric-label">Avg. Subscribers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+      
+      <!-- Trending Timeline Chart -->
+      <div class="chart-container">
+        <div class="chart-wrapper">
+          <canvas 
+            baseChart
+            [data]="timelineData"
+            [options]="timelineOptions"
+            [type]="lineChartType">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Malware Families Chart -->
+      <div class="chart-container">
+        <div class="chart-wrapper">
+          <canvas 
+            baseChart
+            [data]="malwareFamiliesData"
+            [options]="malwareFamiliesOptions"
+            [type]="doughnutChartType">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Popularity Leaderboard Chart -->
+      <div class="chart-container chart-wide">
+        <div class="chart-wrapper">
+          <canvas 
+            baseChart
+            [data]="popularityData"
+            [options]="popularityOptions"
+            [type]="barChartType">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Indicator Distribution Chart -->
+      <div class="chart-container">
+        <div class="chart-wrapper">
+          <canvas 
+            baseChart
+            [data]="indicatorDistributionData"
+            [options]="indicatorDistributionOptions"
+            [type]="polarAreaChartType">
+          </canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Data Tables Section -->
+    <div class="data-tables">
+      
+      <!-- Top Malware Families Table -->
+      <div class="table-container">
+        <h3 class="table-title">
+          <i class="fas fa-virus"></i>
+          Top Malware Families
+        </h3>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Malware Family</th>
+                <th>Pulse Count</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let family of insights.topMalwareFamilies; let i = index" 
+                  [class]="'rank-' + (i + 1)">
+                <td class="rank-cell">{{ i + 1 }}</td>
+                <td class="family-cell">{{ family.malware_family }}</td>
+                <td class="count-cell">{{ family.count }}</td>
+                <td class="percentage-cell">
+                  {{ ((family.count / metrics.totalPulses) * 100).toFixed(1) }}%
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Popularity Leaderboard Table -->
+      <div class="table-container">
+        <h3 class="table-title">
+          <i class="fas fa-trophy"></i>
+          Popularity Leaderboard
+        </h3>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Pulse Name</th>
+                <th>Subscribers</th>
+                <th>Exports</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pulse of insights.popularityLeaderboard; let i = index" 
+                  [class]="'rank-' + (i + 1)">
+                <td class="rank-cell">{{ i + 1 }}</td>
+                <td class="pulse-cell" [title]="pulse.pulse_name">
+                  {{ pulse.pulse_name.length > 40 ? (pulse.pulse_name | slice:0:40) + '...' : pulse.pulse_name }}
+                </td>
+                <td class="subscribers-cell">{{ formatNumber(pulse.subscriber_count) }}</td>
+                <td class="exports-cell">{{ formatNumber(pulse.export_count) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

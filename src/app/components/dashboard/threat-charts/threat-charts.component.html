@@ -1,0 +1,222 @@
+<div class="threat-charts-container">
+  <!-- Header Section -->
+  <!-- <div class="header-section">
+    <h2 class="page-title">Threat Intelligence Dashboard</h2>
+    <div class="action-buttons">
+      <button class="btn btn-primary" (click)="refreshData()" [disabled]="isLoading">
+        <i class="fas fa-sync" [class.fa-spin]="isLoading"></i>
+        Refresh
+      </button>
+      <button class="btn btn-secondary" (click)="exportData()" [disabled]="isLoading">
+        <i class="fas fa-download"></i>
+        Export Data
+      </button>
+    </div>
+  </div> -->
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading threat data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <div class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+    <button class="btn btn-primary" (click)="refreshData()">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading && !error" class="dashboard-content">
+    
+    <!-- Metrics Cards -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon">
+          <i class="fas fa-network-wired"></i>
+        </div>
+        <div class="metric-content">
+          <h3>{{ threatMetrics.totalIps | number }}</h3>
+          <p>Total Threat IPs</p>
+        </div>
+      </div>
+
+      <div class="metric-card critical">
+        <div class="metric-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="metric-content">
+          <h3>{{ threatMetrics.criticalThreats | number }}</h3>
+          <p>Critical Threats</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">
+          <i class="fas fa-globe"></i>
+        </div>
+        <div class="metric-content">
+          <h3>{{ threatMetrics.uniqueCountries | number }}</h3>
+          <p>Countries</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="metric-content">
+          <h3>{{ threatMetrics.averageScore | number }}</h3>
+          <p>Avg. Score</p>
+        </div>
+      </div>
+
+      <div class="metric-card recent">
+        <div class="metric-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="metric-content">
+          <h3>{{ threatMetrics.latestReports | number }}</h3>
+          <p>Last 24h Reports</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+      
+      <!-- Time Series Chart -->
+      <!-- <div class="chart-container">
+        <div class="chart-header">
+          <h3>Threat Reports Over Time</h3>
+          <p>Daily threat report trends</p>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart
+            [data]="timeSeriesData"
+            [options]="timeSeriesOptions"
+            [type]="lineChartType">
+          </canvas>
+        </div>
+      </div> -->
+
+      <!-- Top IPs Chart -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>Top 10 Threat IPs</h3>
+          <p>Highest abuse confidence scores</p>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart
+            [data]="topIpsData"
+            [options]="barChartOptions"
+            [type]="barChartType">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Threat Level Distribution -->
+      <!-- <div class="chart-container">
+        <div class="chart-header">
+          <h3>Threat Level Distribution</h3>
+          <p>Breakdown by severity level</p>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart
+            [data]="threatLevelData"
+            [options]="pieChartOptions"
+            [type]="pieChartType">
+          </canvas>
+        </div>
+      </div> -->
+
+      <!-- Country Distribution -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>Top 15 Countries</h3>
+          <p>Threat distribution by country</p>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart
+            [data]="countryHeatmapData"
+            [options]="barChartOptions"
+            [type]="barChartType">
+          </canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>Hourly Trend</h3>
+          <p>number of malicious IPs reported during each hour of the last 24 hours</p>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart
+  [data]="hourlyTrendData"
+  [options]="hourlyTrendOptions"
+  chartType="line">
+</canvas>
+        </div>
+      </div>
+      
+      <!-- Abuse Score Histogram -->
+      <!-- <div class="chart-container chart-full-width">
+        <div class="chart-header">
+          <h3>Abuse Score Distribution</h3>
+          <p>Histogram of abuse confidence scores</p>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart
+            [data]="abuseHistogramData"
+            [options]="barChartOptions"
+            [type]="barChartType">
+          </canvas>
+        </div>
+      </div> -->
+
+    </div>
+
+    <!-- Additional Info Section -->
+    <div class="info-section">
+      <div class="info-card">
+        <h4>Threat Level Legend</h4>
+        <div class="legend-items">
+          <div class="legend-item">
+            <span class="legend-color critical"></span>
+            <span>Critical (100): Confirmed malicious</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color high"></span>
+            <span>High (80-99): Highly suspicious</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color medium"></span>
+            <span>Medium (60-79): Moderate risk</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color low"></span>
+            <span>Low (<60): Minimal risk</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h4>Data Summary</h4>
+        <div class="summary-stats">
+          <p><strong>High Risk IPs:</strong> {{ threatMetrics.criticalThreats + threatMetrics.highThreats | number }}</p>
+          <p><strong>Medium Risk IPs:</strong> {{ threatMetrics.mediumThreats | number }}</p>
+          <p><strong>Low Risk IPs:</strong> {{ threatMetrics.lowThreats | number }}</p>
+          <p><strong>Coverage:</strong> {{ threatMetrics.uniqueCountries | number }} countries</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="map" style="height: 600px;"></div>
