@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import { RealTimeAlertsComponent } from './shared/alerts/real-time-alerts.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,RouterModule,FormsModule,CommonModule,NavbarComponent],
+  imports: [RouterOutlet,RouterModule,FormsModule,CommonModule,NavbarComponent,RealTimeAlertsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

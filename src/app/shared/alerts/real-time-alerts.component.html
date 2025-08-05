@@ -1,0 +1,151 @@
+<!-- real-time-alerts.component.html -->
+<div class="threat-alerts-widget" [class.minimized]="isMinimized" *ngIf="loggedIn" >
+  <!-- Header -->
+  <div class="widget-header" (click)="toggleMinimize()">
+    <div class="header-left">
+      <div class="status-indicator" [class]="getConnectionStatusClass()"></div>
+      <h3 class="widget-title">
+        <i class="fas fa-shield-alt"></i>
+        Threat Intelligence Alerts
+      </h3>
+      <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </div>
+    
+    <div class="header-actions">
+      <button 
+        class="btn-icon" 
+        title="Reconnect" 
+        (click)="reconnect(); $event.stopPropagation()"
+        [disabled]="connectionStatus === 'connecting'">
+        <i class="fas fa-sync-alt" [class.fa-spin]="connectionStatus === 'connecting'"></i>
+      </button>
+      
+      <button 
+        class="btn-icon" 
+        title="Clear alerts" 
+        (click)="clearAlerts(); $event.stopPropagation()">
+        <i class="fas fa-trash"></i>
+      </button>
+      
+      <button class="btn-icon minimize-btn" title="Toggle minimize">
+        <i class="fas" [class.fa-chevron-up]="isMinimized" [class.fa-chevron-down]="!isMinimized"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Connection Status Bar -->
+  <div class="connection-status" [class]="getConnectionStatusClass()" *ngIf="!isMinimized">
+    <div class="status-text">
+      <ng-container [ngSwitch]="connectionStatus">
+        <span *ngSwitchCase="'connected'">
+          <i class="fas fa-check-circle"></i> Connected - Monitoring active
+        </span>
+        <span *ngSwitchCase="'connecting'">
+          <i class="fas fa-spinner fa-spin"></i> Connecting...
+        </span>
+        <span *ngSwitchCase="'disconnected'">
+          <i class="fas fa-times-circle"></i> Disconnected
+        </span>
+        <span *ngSwitchCase="'error'">
+          <i class="fas fa-exclamation-triangle"></i> Connection error
+        </span>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Alerts List -->
+  <div class="alerts-container" *ngIf="!isMinimized">
+    <div class="no-alerts" *ngIf="alerts.length === 0">
+      <div class="no-alerts-icon">
+        <i class="fas fa-shield-check"></i>
+      </div>
+      <p>No threat alerts detected</p>
+      <small>System is monitoring your subscribed channels</small>
+    </div>
+
+    <div class="alerts-list" *ngIf="alerts.length > 0">
+      <div 
+        class="alert-item" 
+        *ngFor="let alert of alerts; trackBy: trackByAlertId"
+        [class]="getSeverityClass(alert.data?.severity || 'LOW')">
+        
+        <!-- Alert Header -->
+        <div class="alert-header">
+          <div class="severity-indicator">
+            <i class="fas fa-exclamation-triangle" *ngIf="alert.data?.severity === 'HIGH'"></i>
+            <i class="fas fa-exclamation-circle" *ngIf="alert.data?.severity === 'MEDIUM'"></i>
+            <i class="fas fa-info-circle" *ngIf="alert.data?.severity === 'LOW'"></i>
+          </div>
+          
+          <div class="alert-meta">
+            <span class="severity-label">{{ alert.data?.severity }}</span>
+            <span class="timestamp" [title]="formatTimestamp(alert.timestamp)">
+              {{ getTimeAgo(alert.timestamp) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Keyword Match -->
+        <div class="keyword-match">
+          <span class="keyword-label">Keyword:</span>
+          <span class="keyword-value">{{ alert.data?.matched_keyword }}</span>
+        </div>
+
+        <!-- Channel Info -->
+        <div class="channel-info">
+          <div class="channel-name">
+            <i class="fab fa-telegram"></i>
+            {{ alert.data?.channel_display_name }}
+          </div>
+          <div class="channel-username">{{ alert.data?.channel_username }}</div>
+        </div>
+
+        <!-- Message Preview -->
+        <div class="message-preview">
+          <div class="message-text">{{ alert.data?.message_preview }}</div>
+        </div>
+
+        <!-- Alert Actions -->
+        <div class="alert-actions">
+          <button 
+            class="btn-action primary" 
+            (click)="openMessageUrl(alert.data?.message_url || '')"
+            *ngIf="alert.data?.message_url">
+            <i class="fas fa-external-link-alt"></i>
+            View Message
+          </button>
+          
+          <button class="btn-action secondary">
+            <i class="fas fa-bookmark"></i>
+            Save
+          </button>
+          
+          <button class="btn-action secondary">
+            <i class="fas fa-share"></i>
+            Share
+          </button>
+        </div>
+
+        <!-- Alert Footer -->
+        <div class="alert-footer">
+          <small class="alert-id">ID: {{ alert.data?.id }}</small>
+          <small class="user-info" *ngIf="alert.data?.username">
+            User: {{ alert.data!.username  }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minimized View -->
+  <div class="minimized-content" *ngIf="isMinimized && alerts.length > 0">
+    <div class="recent-alert">
+      <div class="alert-summary">
+        <span class="severity-dot" [class]="getSeverityClass(alerts[0].data?.severity || 'LOW')"></span>
+        <span class="keyword">{{ alerts[0].data?.matched_keyword }}</span>
+        <span class="channel">{{ alerts[0].data?.channel_username }}</span>
+        <span class="time">{{ getTimeAgo(alerts[0].timestamp) }}</span>
+      </div>
+    </div>
+  </div>
+</div>
