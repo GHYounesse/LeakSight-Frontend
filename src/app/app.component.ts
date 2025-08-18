@@ -15,7 +15,7 @@ import { RealTimeAlertsComponent } from './shared/alerts/real-time-alerts.compon
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'TIM';
+  title = 'LeakSight';
   theme: 'dark-theme' | 'light-theme' = 'dark-theme';
   sidebarVisible: boolean = true;
 

@@ -6,106 +6,7 @@ import { Subscription, interval } from 'rxjs';
 import { filter } from 'rxjs';
 
 
-// @Component({
-//   selector: 'app-navbar',
-//   imports: [CommonModule, RouterModule],
-//   templateUrl: './navbar.component.html',
-//   styleUrl: './navbar.component.scss'
-// })
-// export class NavbarComponent implements OnInit {
-//   isUserLoggedIn: boolean = false;
-//   username: string = '';
-//   isNavbarOpen: boolean = false;
-//   currentRoute: string = '';
 
-//   navItems = [
-//     { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-//     { path: '/login', label: 'Login', icon: 'login' }
-    
-//   ];
-
-
-
-
-
-//   constructor(private router: Router) {}
-
-//   ngOnInit(): void {
-//     // Initialize user authentication state
-//     this.checkAuthenticationStatus();
-//     this.router.events.pipe(
-//       filter(event => event instanceof NavigationEnd)
-//     ).subscribe((event: NavigationEnd) => {
-//       this.currentRoute = event.urlAfterRedirects;
-//     });
-    
-//   }
-//   isActive(route: string): boolean {
-//     return this.currentRoute === route;
-//   }
-
-//   navigateTo(route: string) {
-//     this.router.navigate([route]);
-//   }
-
-//   /**
-//    * Check if user is authenticated and update component state
-//    */
-//   checkAuthenticationStatus(): void {
-//     // This would typically check your authentication service
-//     // For now, simulating with localStorage or a service call
-//     const token = localStorage.getItem('authToken');
-//     const storedUsername = localStorage.getItem('username');
-    
-//     if (token && storedUsername) {
-//       this.isUserLoggedIn = true;
-//       this.username = storedUsername;
-//     }
-//   }
-
-//   /**
-//    * Toggle mobile navbar collapse
-//    */
-//   toggleNavbar(): void {
-//     this.isNavbarOpen = !this.isNavbarOpen;
-//   }
-
-//   /**
-//    * Handle user logout
-//    */
-//   logout(event: Event): void {
-//     event.preventDefault();
-    
-//     // Clear authentication data
-//     localStorage.removeItem('authToken');
-//     localStorage.removeItem('username');
-    
-//     // Update component state
-//     this.isUserLoggedIn = false;
-//     this.username = '';
-    
-//     // Close mobile navbar if open
-//     this.isNavbarOpen = false;
-    
-//     // Optional: Redirect to login page or emit logout event
-//     // this.router.navigate(['/login']);
-//     // this.authService.logout();
-    
-//     console.log('User logged out successfully');
-//   }
-
-//   /**
-//    * Method to update user info when login occurs
-//    * Call this from your authentication service
-//    */
-//   updateUserInfo(username: string): void {
-//     this.isUserLoggedIn = true;
-//     this.username = username;
-//   }
-// }
-
-
-// navbar.component.ts
 
 
 interface NavItem {
@@ -123,11 +24,7 @@ interface QuickStat {
   color?: string;
 }
 
-// @Component({
-//   selector: 'app-navbar',
-//   templateUrl: './navbar.component.html',
-//   styleUrls: ['./navbar.component.scss']
-// })
+
 @Component({
   selector: 'app-navbar',
   imports: [CommonModule, RouterModule],
@@ -136,18 +33,14 @@ interface QuickStat {
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   isNavbarOpen = false;
-  isUserLoggedIn = true; // Replace with actual auth service
-  username = 'Admin User'; // Replace with actual user data
+  isUserLoggedIn = false; 
+  username = 'Username'; 
   userInitial = 'A';
   currentRoute = '';
   
   private subscriptions: Subscription[] = [];
 
-  // quickStats: QuickStat[] = [
-  //   { value: 1247, label: 'Active IOCs' },
-  //   { value: 23, label: 'High Risk', color: 'danger' },
-  //   { value: 15, label: 'New Alerts', color: 'warning' }
-  // ];
+  
 
   navItems: NavItem[] = [
     {
@@ -253,38 +146,45 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { label: 'Help', path: '/help', icon: 'fas fa-question-circle' }
   ];
 
-  systemOnline = true;
+  //systemOnline = true;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.checkAuthenticationStatus();
     // Subscribe to route changes
-    const routerSubscription = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        this.currentRoute = event.url;
-      });
+    // const routerSubscription = this.router.events
+    //   .pipe(filter(event => event instanceof NavigationEnd))
+    //   .subscribe((event: NavigationEnd) => {
+    //     this.currentRoute = event.url;
+    //   });
     
-    this.subscriptions.push(routerSubscription);
+    // this.subscriptions.push(routerSubscription);
 
     // Simulate real-time updates
     // const statsUpdateSubscription = interval(30000).subscribe(() => {
     //   this.updateQuickStats();
     // });
     
-    const alertsUpdateSubscription = interval(45000).subscribe(() => {
-      this.updateAlertsBadge();
-    });
+    // const alertsUpdateSubscription = interval(45000).subscribe(() => {
+    //   this.updateAlertsBadge();
+    // });
 
-    this.subscriptions.push( alertsUpdateSubscription);
+    //this.subscriptions.push( alertsUpdateSubscription);
 
     // Get initial route
-    this.currentRoute = this.router.url;
+    // this.currentRoute = this.router.url;
+    // console.log("Current Route:", this.currentRoute);
+    this.router.events.subscribe(event => {
+    if (event instanceof NavigationEnd) {
+      this.currentRoute = event.urlAfterRedirects;
+      console.log("Current Route:", this.currentRoute);
+    }
+  });
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    //this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   toggleNavbar(): void {
@@ -296,11 +196,23 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isNavbarOpen = false; // Close mobile menu
   }
 
-  isActive(path: string): boolean {
-    if (path === '/dashboard' && this.currentRoute === '/') {
-      return true;
-    }
-    return this.currentRoute.startsWith(path);
+  isActive(path: string): boolean{
+    // if (path === '/dashboard' && this.currentRoute === '/') {
+    //   return true;
+    // }
+    //console.log("Path:", path,"this.currentRoute === path",this.currentRoute === path);
+    return this.currentRoute === path ;
+    
+
+  }
+  isActiveStr(path: string): string {
+    // if (path === '/dashboard' && this.currentRoute === '/') {
+    //   return true;
+    // }
+    //console.log("Path:", path,"this.currentRoute === path",this.currentRoute === path);
+    //return this.currentRoute === path ;
+    return this.currentRoute === path ? 'active' : '';
+
   }
 
   isParentActive(item: NavItem): boolean {

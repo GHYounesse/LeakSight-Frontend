@@ -40,9 +40,7 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   
-  // API endpoint - adjust this to your actual API endpoint
-  //private apiUrl = 'http://localhost:8000/auth/login';
-
+  
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -52,12 +50,12 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       email: [{ value: '', disabled: false }, [Validators.required, Validators.email]],
       password: [{ value: '', disabled: false }, [Validators.required, Validators.minLength(6)]],
-      rememberMe: [{ value: false, disabled: false }]
+      rememberMe: [{ value: false, disabled: true }]
     });
   }
 
   ngOnInit(): void {
-    // Clear any existing tokens on login page load
+    
     this.clearAuthData();
     
     
@@ -96,12 +94,15 @@ export class LoginComponent implements OnInit {
           //   localStorage.setItem('username', response.user.name);
           // }
           setTimeout(() => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/dashboard']);
           }, 1500);
         },
         error: () => {
           this.errorMessage = 'Login failed. Please try again.';
           this.isLoading = false;
+          this.loginForm.get('email')?.enable();
+          this.loginForm.get('password')?.enable();
+          this.loginForm.get('rememberMe')?.enable();
         }
       });
     
