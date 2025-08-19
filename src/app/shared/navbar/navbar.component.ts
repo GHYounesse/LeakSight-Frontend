@@ -4,7 +4,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { RouterModule, Routes } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
 import { filter } from 'rxjs';
-
+import { AuthService } from '../../service/auth/auth.service';
+import { Observable} from "rxjs";
 
 
 
@@ -38,6 +39,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   userInitial = 'A';
   currentRoute = '';
   
+  
   private subscriptions: Subscription[] = [];
 
   
@@ -56,9 +58,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
       children: [
         { label: 'View All IOCs', path: '/iocs', icon: 'fas fa-list' },
         { label: 'Add Single IOC', path: '/iocs/create', icon: 'fas fa-plus' },
-        { label: 'Bulk Upload', path: '/iocs/bulk', icon: 'fas fa-upload' },
-        { label: 'Manage Tags', path: '/iocs/tags', icon: 'fas fa-tags' },
-        { label: 'Related IOCs', path: '/iocs/related', icon: 'fas fa-project-diagram' }
+        { label: 'Bulk Upload', path: '/iocs/bulk', icon: 'fas fa-upload' }
+        // ,
+        // { label: 'Manage Tags', path: '/iocs/tags', icon: 'fas fa-tags' },
+        // { label: 'Related IOCs', path: '/iocs/related', icon: 'fas fa-project-diagram' }
       ], requiresAuth: true
     },
     // {
@@ -113,23 +116,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
       icon: 'fas fa-info-circle',
       requiresAuth: false
     },
-    {
-      label: 'Alerts',
-      path: '/alerts',
-      icon: 'fas fa-exclamation-triangle',
-      badge: 15, requiresAuth: true
-    },
+    // {
+    //   label: 'Alerts',
+    //   path: '/alerts',
+    //   icon: 'fas fa-exclamation-triangle',
+    //   badge: 15, requiresAuth: true
+    // },
     {
       label: 'Feeds',
       path: '/feeds',
       icon: 'fas fa-rss',
-      children: [
-        { label: 'Active Feeds', path: '/feeds', icon: 'fas fa-list' },
-        { label: 'Add Feed', path: '/feeds/add', icon: 'fas fa-plus' },
-        { label: 'Feed Statistics', path: '/feeds/stats', icon: 'fas fa-chart-bar' },
-        { label: 'Process Feeds', path: '/feeds/process', icon: 'fas fa-sync' }
-      ], requiresAuth: true
+      
+      requiresAuth: true
     }
+    // children: [
+      //   { label: 'Active Feeds', path: '/feeds', icon: 'fas fa-list' },
+      //   { label: 'Add Feed', path: '/feeds/add', icon: 'fas fa-plus' },
+      //   { label: 'Feed Statistics', path: '/feeds/stats', icon: 'fas fa-chart-bar' },
+      //   { label: 'Process Feeds', path: '/feeds/process', icon: 'fas fa-sync' }
+      // ]
   ];
 
   exportItems: NavItem[] = [
@@ -140,18 +145,26 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ];
 
   userMenuItems: NavItem[] = [
-    { label: 'Profile', path: '/profile', icon: 'fas fa-user' },
+    //{ label: 'Profile', path: '/profile', icon: 'fas fa-user' },
     { label: 'Settings', path: '/settings', icon: 'fas fa-cog' },
-    { label: 'Notifications', path: '/notifications', icon: 'fas fa-bell' },
+    { label: 'Subscriptions', path: '/subscriptions', icon: 'fab fa-telegram' },
     { label: 'Help', path: '/help', icon: 'fas fa-question-circle' }
   ];
 
   //systemOnline = true;
 
-  constructor(private router: Router) {}
+  isLoggedIn$!: Observable<boolean>;
+  
 
-  ngOnInit(): void {
+  constructor(private authService: AuthService, private router: Router) {
+    this.authService.isLoggedIn$.subscribe(value => {
+    this.isUserLoggedIn=value;
     this.checkAuthenticationStatus();
+  });
+  
+  }
+  ngOnInit(): void {
+    //this.checkAuthenticationStatus();
     // Subscribe to route changes
     // const routerSubscription = this.router.events
     //   .pipe(filter(event => event instanceof NavigationEnd))
@@ -178,7 +191,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.router.events.subscribe(event => {
     if (event instanceof NavigationEnd) {
       this.currentRoute = event.urlAfterRedirects;
-      console.log("Current Route:", this.currentRoute);
+      //console.log("Current Route:", this.currentRoute);
     }
   });
   }
@@ -236,7 +249,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     
     // Clear authentication data
     this.clearAuthData();
-    
+    this.authService.logout();
     // Close mobile navbar if open
     this.isNavbarOpen = false;
     
@@ -253,16 +266,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   //   }));
   // }
 
-  private updateAlertsBadge(): void {
-    const alertsItem = this.navItems.find(item => item.path === '/alerts');
-    if (alertsItem && alertsItem.badge !== undefined) {
-      alertsItem.badge = Math.max(0, alertsItem.badge + Math.floor(Math.random() * 3) - 1);
-    }
-  }
+  // private updateAlertsBadge(): void {
+  //   const alertsItem = this.navItems.find(item => item.path === '/alerts');
+  //   if (alertsItem && alertsItem.badge !== undefined) {
+  //     alertsItem.badge = Math.max(0, alertsItem.badge + Math.floor(Math.random() * 3) - 1);
+  //   }
+  // }
 
-  formatStatValue(value: number): string {
-    return value.toLocaleString();
-  }
+  // formatStatValue(value: number): string {
+  //   return value.toLocaleString();
+  // }
 
   onExportClick(exportType: string): void {
     console.log('Exporting as:', exportType);
@@ -336,6 +349,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   getVisibleNavItems(): NavItem[] {
     return this.navItems.filter(item => {
       if (item.requiresAuth === undefined) return true; // Show items without requiresAuth property
+      //return this.isUserLoggedIn ? item.requiresAuth : !item.requiresAuth;
       return this.isUserLoggedIn ? item.requiresAuth : !item.requiresAuth;
     });
   }
@@ -344,6 +358,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
    * Get filtered export items (only show if logged in)
    */
   getVisibleExportItems(): NavItem[] {
+    //return this.isUserLoggedIn ? this.exportItems : [];
     return this.isUserLoggedIn ? this.exportItems : [];
   }
 
@@ -363,13 +378,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
    * Method to update user info when login occurs
    * Call this method from your authentication service after successful login
    */
-  updateUserInfo(username: string, token: string): void {
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('username', username);
-    this.isUserLoggedIn = true;
-    this.username = username;
-    this.userInitial = username.charAt(0).toUpperCase();
-  }
+  // updateUserInfo(username: string, token: string): void {
+  //   localStorage.setItem('authToken', token);
+  //   localStorage.setItem('username', username);
+  //   this.isUserLoggedIn = true;
+  //   this.username = username;
+  //   this.userInitial = username.charAt(0).toUpperCase();
+  // }
 
   
 

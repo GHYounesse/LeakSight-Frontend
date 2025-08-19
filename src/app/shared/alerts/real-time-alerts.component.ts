@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { WebSocketService,ThreatAlert } from '../../service/websocket/websocket.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../service/auth/auth.service';
 
 @Component({
   selector: 'app-real-time-alerts',
@@ -16,10 +17,17 @@ export class RealTimeAlertsComponent implements OnInit, OnDestroy {
   isMinimized: boolean = false;
   unreadCount: number = 0;
   loggedIn:boolean=false
+  isHidden: boolean = true; 
+  totalAlertsCount: number = 0; 
   
   private subscriptions: Subscription[] = [];
 
-  constructor(private webSocketService: WebSocketService) {}
+  constructor(private webSocketService: WebSocketService,private authService: AuthService) {
+    this.authService.isLoggedIn$.subscribe(value => {
+    this.loggedIn=value;
+    
+  });
+  }
 
   ngOnInit(): void {
     if(this.isAuthenticated()){
@@ -68,25 +76,47 @@ export class RealTimeAlertsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(statusSub, alertsSub);
   }
 
-  private handleNewAlert(alert: ThreatAlert): void {
-    // Add alert to the beginning of the array
-    this.alerts.unshift(alert);
+  // private handleNewAlert(alert: ThreatAlert): void {
+  //   // Add alert to the beginning of the array
+  //   this.alerts.unshift(alert);
     
-    // Keep only last 50 alerts
+  //   // Keep only last 50 alerts
+  //   if (this.alerts.length > 50) {
+  //     this.alerts = this.alerts.slice(0, 50);
+  //   }
+
+  //   // Increment unread count if minimized
+  //   if (this.isMinimized) {
+  //     this.unreadCount++;
+  //   }
+
+  //   // Play alert sound
+  //   this.playAlertSound(alert.data?.severity || 'LOW');
+
+  //   // Show toast notification
+  //   this.showToastNotification(alert);
+  // }
+  private handleNewAlert(alert: ThreatAlert): void {
+    this.alerts.unshift(alert);
+    this.totalAlertsCount++; // Increment total count
+    
     if (this.alerts.length > 50) {
       this.alerts = this.alerts.slice(0, 50);
     }
 
-    // Increment unread count if minimized
-    if (this.isMinimized) {
+    // Increment unread count if minimized OR hidden
+    if (this.isMinimized || this.isHidden) {
       this.unreadCount++;
     }
 
-    // Play alert sound
     this.playAlertSound(alert.data?.severity || 'LOW');
-
-    // Show toast notification
     this.showToastNotification(alert);
+  }
+  toggleVisibility(): void {
+    this.isHidden = !this.isHidden;
+    if (!this.isHidden) {
+      this.unreadCount = 0; // Reset unread count when showing widget
+    }
   }
 
   private playAlertSound(severity: string): void {
@@ -94,13 +124,13 @@ export class RealTimeAlertsComponent implements OnInit, OnDestroy {
     
     switch (severity) {
       case 'HIGH':
-        audio.src = '/assets/sounds/high-alert.mp3';
+        audio.src = '/assets/sounds/high_alert.mp3';
         break;
       case 'MEDIUM':
-        audio.src = '/assets/sounds/medium-alert.mp3';
+        audio.src = '/assets/sounds/med_alert.wav';
         break;
       default:
-        audio.src = '/assets/sounds/low-alert.mp3';
+        audio.src = '/assets/sounds/low_alert.wav';
     }
 
     audio.volume = 0.3;

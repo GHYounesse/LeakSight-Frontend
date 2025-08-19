@@ -1,37 +1,60 @@
-<!-- real-time-alerts.component.html -->
-<div class="threat-alerts-widget" [class.minimized]="isMinimized" *ngIf="loggedIn" >
-  <!-- Header -->
-  <div class="widget-header" (click)="toggleMinimize()">
-    <div class="header-left">
-      <div class="status-indicator" [class]="getConnectionStatusClass()"></div>
-      <h3 class="widget-title">
-        <i class="fas fa-shield-alt"></i>
-        Threat Intelligence Alerts
-      </h3>
-      <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
-    </div>
+<div *ngIf="loggedIn">
+  <!-- Status Indicator (always visible when logged in) -->
+  <div 
+    class="status-indicator-widget" 
+    [class]="getConnectionStatusClass()"
+    (click)="toggleVisibility()"
+    [attr.title]="connectionStatus + ' - ' + (unreadCount > 0 ? unreadCount + ' unread alerts' : 'No new alerts')">
     
-    <div class="header-actions">
-      <button 
-        class="btn-icon" 
-        title="Reconnect" 
-        (click)="reconnect(); $event.stopPropagation()"
-        [disabled]="connectionStatus === 'connecting'">
-        <i class="fas fa-sync-alt" [class.fa-spin]="connectionStatus === 'connecting'"></i>
-      </button>
-      
-      <button 
-        class="btn-icon" 
-        title="Clear alerts" 
-        (click)="clearAlerts(); $event.stopPropagation()">
-        <i class="fas fa-trash"></i>
-      </button>
-      
-      <button class="btn-icon minimize-btn" title="Toggle minimize">
-        <i class="fas" [class.fa-chevron-up]="isMinimized" [class.fa-chevron-down]="!isMinimized"></i>
-      </button>
+    <div class="status-dot" [class]="getConnectionStatusClass()"></div>
+    <div class="status-text">
+      <span class="connection-label">{{ connectionStatus }}</span>
+      <span class="unread-count" *ngIf="unreadCount > 0">({{ unreadCount }})</span>
     </div>
   </div>
+
+  <!-- Main Widget (shown/hidden based on isHidden) -->
+  <div class="threat-alerts-widget" [class.minimized]="isMinimized" *ngIf="!isHidden">
+    <!-- Add a close button to the header actions -->
+    <div class="widget-header" (click)="toggleMinimize()">
+      <div class="header-left">
+        <div class="status-indicator" [class]="getConnectionStatusClass()"></div>
+        <h3 class="widget-title">
+          <i class="fas fa-shield-alt"></i>
+          Threat Intelligence Alerts
+        </h3>
+        <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      </div>
+      
+      <div class="header-actions">
+        <button 
+          class="btn-icon" 
+          title="Reconnect" 
+          (click)="reconnect(); $event.stopPropagation()"
+          [disabled]="connectionStatus === 'connecting'">
+          <i class="fas fa-sync-alt" [class.fa-spin]="connectionStatus === 'connecting'"></i>
+        </button>
+        
+        <button 
+          class="btn-icon" 
+          title="Clear alerts" 
+          (click)="clearAlerts(); $event.stopPropagation()">
+          <i class="fas fa-trash"></i>
+        </button>
+
+        <!-- Add hide button -->
+        <button 
+          class="btn-icon" 
+          title="Hide widget" 
+          (click)="toggleVisibility(); $event.stopPropagation()">
+          <i class="fas fa-times"></i>
+        </button>
+        
+        <button class="btn-icon minimize-btn" title="Toggle minimize">
+          <i class="fas" [class.fa-chevron-up]="isMinimized" [class.fa-chevron-down]="!isMinimized"></i>
+        </button>
+      </div>
+    </div>
 
   <!-- Connection Status Bar -->
   <div class="connection-status" [class]="getConnectionStatusClass()" *ngIf="!isMinimized">
@@ -148,4 +171,6 @@
       </div>
     </div>
   </div>
+</div>
+
 </div>

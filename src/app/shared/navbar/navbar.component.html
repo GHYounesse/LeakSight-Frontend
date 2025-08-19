@@ -3,7 +3,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container-fluid">
     <!-- Brand -->
-    <a class="navbar-brand" [routerLink]="isUserLoggedIn ? ['/dashboard'] : ['/home']">
+    <a class="navbar-brand" [routerLink]="(isLoggedIn$ | async) ? ['/dashboard'] : ['/home']">
       <img src="logo.png" width="200" height="65" alt="LeakSight">
     </a>
 
@@ -89,7 +89,7 @@
       </ul>
 
       <!-- Mobile Export Section - Only show if logged in -->
-      <div class="mobile-nav-section d-lg-none" *ngIf="isUserLoggedIn && getVisibleExportItems().length > 0">
+      <!-- <div class="mobile-nav-section d-lg-none" *ngIf="isUserLoggedIn && getVisibleExportItems().length > 0">
         <h6>Export & Reports</h6>
         <ul class="navbar-nav">
           <li *ngFor="let exportItem of getVisibleExportItems()" class="nav-item">
@@ -103,7 +103,7 @@
             </a>
           </li>
         </ul>
-      </div>
+      </div> -->
 
       <!-- User Section -->
       <ul class="navbar-nav ms-auto">
@@ -120,7 +120,7 @@
         </li> -->
 
         <!-- Export Dropdown (Desktop Only) - Only show if logged in -->
-        <li class="nav-item dropdown d-none d-lg-block" *ngIf="isUserLoggedIn && getVisibleExportItems().length > 0">
+        <!-- <li class="nav-item dropdown d-none d-lg-block" *ngIf="(isLoggedIn$ | async) && getVisibleExportItems().length > 0">
           <a
             class="nav-link dropdown-toggle"
             href="#"
@@ -143,7 +143,7 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> -->
 
         <!-- User Profile - Only show if logged in -->
         <li class="nav-item dropdown" *ngIf="isUserLoggedIn">
@@ -186,7 +186,7 @@
         <li class="nav-item" *ngIf="!isUserLoggedIn && !isLoginPage()">
           <a class="nav-link" [routerLink]="['/login']">
             <i class="fas fa-sign-in-alt"></i>
-            Login
+            Login {{!isUserLoggedIn}}
           </a>
         </li>
       </ul>

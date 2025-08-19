@@ -1,4 +1,160 @@
-/* real-time-alerts.component.scss */
+.status-indicator-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(26, 26, 46, 0.95);
+  border: 1px solid #333366;
+  border-radius: 25px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.85rem;
+  min-width: 140px;
+
+  &:hover {
+    background: rgba(26, 26, 46, 1);
+    border-color: #7de6e7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(125, 230, 231, 0.2);
+  }
+
+  // Active state when widget is visible
+  &.widget-visible {
+    bottom: calc(80vh + 30px);
+    background: rgba(233, 69, 96, 0.9);
+    border-color: #e94560;
+    
+    &:hover {
+      background: rgba(233, 69, 96, 1);
+      transform: translateY(-1px);
+    }
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    &.status-connected {
+      background: #00ff88;
+      box-shadow: 0 0 8px #00ff88;
+      animation: pulse-green 2s infinite;
+    }
+
+    &.status-connecting {
+      background: #f39c12;
+      box-shadow: 0 0 8px #f39c12;
+      animation: pulse-orange 1s infinite;
+    }
+
+    &.status-disconnected,
+    &.status-error {
+      background: #e74c3c;
+      box-shadow: 0 0 8px #e74c3c;
+      animation: pulse-red 1s infinite;
+    }
+  }
+
+  .status-text {
+    color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+
+    .connection-label {
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .unread-count {
+      color: #f39c12;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+  }
+
+  // When widget is visible, keep indicator at bottom but with visual feedback
+  &.widget-visible {
+    background: rgba(233, 69, 96, 0.9);
+    border-color: #e94560;
+  }
+}
+
+// Modify the main widget positioning to account for the indicator
+.threat-alerts-widget {
+  // Change the position to avoid overlap
+  top: 20px;
+  right: 20px;
+  // ... rest of existing styles remain the same
+}
+
+// New pulse animations
+@keyframes pulse-green {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse-orange {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pulse-red {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.4;
+    transform: scale(1.3);
+  }
+  75% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .status-indicator-widget {
+    bottom: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    min-width: 120px;
+
+    &.widget-visible {
+      bottom: calc(100vh - 60px);
+    }
+  }
+
+  .threat-alerts-widget {
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-height: 100vh;
+  }
+}
+
 .threat-alerts-widget {
   position: fixed;
   top: 20px;

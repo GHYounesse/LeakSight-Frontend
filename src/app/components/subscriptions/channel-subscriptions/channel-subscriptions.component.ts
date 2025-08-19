@@ -31,18 +31,12 @@ export class ChannelSubscriptionsComponent implements OnInit {
   isEditing = false;
   editingIndex = -1;
   loading = false;
-  currentUserId = '687620effcae33bf9555540a'; // Replace with actual user ID
+  
   
   // API endpoints
   private apiBaseUrl = 'http://localhost:8080';
   
-  // Common cybersecurity keywords for suggestions
-  suggestedKeywords = [
-    'AI', 'Leak', 'Hack', 'Breach', 'Malware', 'Phishing', 'Ransomware',
-    'Vulnerability', 'Exploit', 'Zero-day', 'APT', 'Botnet', 'DDoS',
-    'SQL Injection', 'XSS', 'CSRF', 'Backdoor', 'Trojan', 'Spyware',
-    'Credential', 'Password', 'Database', 'API', 'Token', 'Certificate'
-  ];
+  
 
   constructor(
     private http: HttpClient,

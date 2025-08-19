@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../service/auth/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { WebSocketService } from '../../service/websocket/websocket.service';
 // Interface for login request
 interface LoginRequest {
   email: string;
@@ -44,7 +45,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private websocketService: WebSocketService
 
   ) {
     this.loginForm = this.fb.group({
@@ -93,6 +95,7 @@ export class LoginComponent implements OnInit {
           // if (response.user) {
           //   localStorage.setItem('username', response.user.name);
           // }
+          this.websocketService.connect();
           setTimeout(() => {
             this.router.navigate(['/dashboard']);
           }, 1500);
