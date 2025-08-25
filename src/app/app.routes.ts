@@ -29,6 +29,8 @@ import { ThreatFeedsComponent } from './components/feeds/threat-feeds/threat-fee
 import { ChannelSubscriptionsComponent } from './components/subscriptions/channel-subscriptions/channel-subscriptions.component';
 import { ThreatChartsComponent } from './components/dashboard/threat-charts/threat-charts.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { BulkIoCCreatorComponent } from './components/ioc/bulk/bulk-ioc-creator.component';
+import { OtxPulseDashboardComponent } from './components/dashboard/otx-charts/otx-pulse-dashboard.component';
 export const routes: Routes = [
 
     // Authentification ////////////////
@@ -41,6 +43,7 @@ export const routes: Routes = [
     {path:"iocs/edit/:id",component:IOCUpdateComponent,canActivate: [AuthGuard]},
     {path:"iocs/:id",component:ViewIOCComponent,canActivate: [AuthGuard]},
     {path:"iocs",component:IOCListComponent,canActivate: [AuthGuard]},
+    {path:"iocs/create/bulk",component:BulkIoCCreatorComponent,canActivate: [AuthGuard]},
     ////////////////// Enrichment ///////////////////
 
     //////////Hash Enrichment //////////
@@ -67,6 +70,8 @@ export const routes: Routes = [
 
     /////////////////////// Dashboard ///////////////////
     {path:'dashboard',component:DashboardComponent,canActivate: [AuthGuard]},
+    {path:'dashboard/blacklist',component:ThreatChartsComponent,canActivate: [AuthGuard]},
+    {path:'dashboard/otx',component:OtxPulseDashboardComponent,canActivate: [AuthGuard]},
     ///////////////////// Unauthorized //////////////////
     {path:'unauthorized',component:UnauthorizedComponent},
     ////////////// Landing Page ///////////////

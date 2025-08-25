@@ -38,7 +38,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   username = 'Username'; 
   userInitial = 'A';
   currentRoute = '';
-  
+  // isSidebarMode = false;
   
   private subscriptions: Subscription[] = [];
 
@@ -49,7 +49,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
       label: 'Dashboard',
       path: '/dashboard',
       icon: 'fas fa-tachometer-alt',
-       requiresAuth: true
+      children: [
+        { label: 'OTX Dashboard', path: '/dashboard/otx', icon: 'fas fa-project-diagram' },
+        { label: 'Ip Blacklist Dashboard', path: '/dashboard/blacklist', icon: 'fas fa-shield-alt' },
+        
+        
+      ], requiresAuth: true
     },
     {
       label: 'IOCs',
@@ -58,7 +63,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       children: [
         { label: 'View All IOCs', path: '/iocs', icon: 'fas fa-list' },
         { label: 'Add Single IOC', path: '/iocs/create', icon: 'fas fa-plus' },
-        { label: 'Bulk Upload', path: '/iocs/bulk', icon: 'fas fa-upload' }
+        { label: 'Bulk Upload', path: '/iocs/create/bulk', icon: 'fas fa-upload' }
         // ,
         // { label: 'Manage Tags', path: '/iocs/tags', icon: 'fas fa-tags' },
         // { label: 'Related IOCs', path: '/iocs/related', icon: 'fas fa-project-diagram' }
@@ -155,6 +160,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   isLoggedIn$!: Observable<boolean>;
   
+// isRadialMenuOpen = false;
+// activeRadialItem: NavItem | null = null;
+// radialMenuLevel = 0;
+// radialMenuHistory: NavItem[] = [];
+
+
 
   constructor(private authService: AuthService, private router: Router) {
     this.authService.isLoggedIn$.subscribe(value => {
@@ -194,6 +205,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
       //console.log("Current Route:", this.currentRoute);
     }
   });
+  // const savedSidebarMode = localStorage.getItem('sidebarMode');
+  // this.isSidebarMode = savedSidebarMode === 'true';
   }
 
   ngOnDestroy(): void {
@@ -209,6 +222,89 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isNavbarOpen = false; // Close mobile menu
   }
 
+  
+//   toggleSidebarMode(): void {
+//   this.isSidebarMode = !this.isSidebarMode;
+//   localStorage.setItem('sidebarMode', this.isSidebarMode.toString());
+//   // Close mobile menu when toggling
+//   this.isNavbarOpen = false;
+  
+//   // Close any open Bootstrap dropdowns
+//   const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+//   dropdowns.forEach(dropdown => {
+//     dropdown.classList.remove('show');
+//   });
+// }
+//   onSidebarItemClick(path: string): void {
+//     this.router.navigate([path]);
+//   // Keep sidebar open on navigation
+//   }
+
+  
+// toggleRadialMenu(): void {
+//   this.isRadialMenuOpen = !this.isRadialMenuOpen;
+//   if (!this.isRadialMenuOpen) {
+//     this.resetRadialMenu();
+//   }
+// }
+
+// openRadialSubmenu(item: NavItem): void {
+//   if (item.children && item.children.length > 0) {
+//     this.radialMenuHistory.push(this.activeRadialItem || item);
+//     this.activeRadialItem = item;
+//     this.radialMenuLevel++;
+//   } else {
+//     // Navigate to item and close menu
+//     this.navigateTo(item.path);
+//     this.isRadialMenuOpen = false;
+//     this.resetRadialMenu();
+//   }
+// }
+
+// goBackInRadialMenu(): void {
+//   if (this.radialMenuHistory.length > 0) {
+//     this.activeRadialItem = this.radialMenuHistory.pop() || null;
+//     this.radialMenuLevel--;
+//   } else {
+//     this.resetRadialMenu();
+//   }
+// }
+
+// resetRadialMenu(): void {
+//   this.activeRadialItem = null;
+//   this.radialMenuLevel = 0;
+//   this.radialMenuHistory = [];
+// }
+
+// getCurrentRadialItems(): NavItem[] {
+//   if (!this.activeRadialItem) {
+//     return this.getVisibleNavItems();
+//   }
+//   return this.activeRadialItem.children || [];
+// }
+
+// calculateRadialPosition(index: number, total: number): { x: number; y: number; rotation: number } {
+//   const centerX = 0;
+//   const centerY = 0;
+//   const radius = 120; // Distance from center
+//   const startAngle = -90; // Start from top
+//   const angleStep = 360 / total;
+//   const angle = (startAngle + (angleStep * index)) * (Math.PI / 180);
+  
+//   return {
+//     x: centerX + Math.cos(angle) * radius,
+//     y: centerY + Math.sin(angle) * radius,
+//     rotation: startAngle + (angleStep * index)
+//   };
+// } 
+// handleRadialMenuClick() {
+//   if (this.radialMenuLevel > 0) {
+//     this.goBackInRadialMenu();
+//   } else {
+//     this.isRadialMenuOpen = false;
+//     this.resetRadialMenu();
+//   }
+// }
   isActive(path: string): boolean{
     // if (path === '/dashboard' && this.currentRoute === '/') {
     //   return true;
@@ -219,14 +315,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   }
   isActiveStr(path: string): string {
-    // if (path === '/dashboard' && this.currentRoute === '/') {
-    //   return true;
-    // }
-    //console.log("Path:", path,"this.currentRoute === path",this.currentRoute === path);
-    //return this.currentRoute === path ;
+    
     return this.currentRoute === path ? 'active' : '';
 
   }
+  
 
   isParentActive(item: NavItem): boolean {
     if (item.children) {

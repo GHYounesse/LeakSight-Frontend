@@ -1,6 +1,6 @@
 
 
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" >
   <div class="container-fluid">
     <!-- Brand -->
     <a class="navbar-brand" [routerLink]="(isLoggedIn$ | async) ? ['/dashboard'] : ['/home']">
@@ -104,7 +104,7 @@
           </li>
         </ul>
       </div> -->
-
+      
       <!-- User Section -->
       <ul class="navbar-nav ms-auto">
         <!-- System Status - Only show if logged in -->
@@ -146,7 +146,7 @@
         </li> -->
 
         <!-- User Profile - Only show if logged in -->
-        <li class="nav-item dropdown" *ngIf="isUserLoggedIn">
+        <!-- <li class="nav-item dropdown" *ngIf="isUserLoggedIn">
           <a
             class="nav-link dropdown-toggle"
             href="#"
@@ -180,16 +180,247 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> -->
+
+        <li class="nav-item dropdown" *ngIf="isUserLoggedIn">
+  <a
+    class="nav-link dropdown-toggle"
+    href="#"
+    role="button"
+    data-bs-toggle="dropdown"
+    (click)="$event.preventDefault()"
+  >
+    <div class="user-avatar">{{ userInitial }}</div>
+    <span class="d-none d-md-inline">{{ username }}</span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <!-- Sidebar Toggle Option -->
+    <!-- <li>
+      <a
+        class="dropdown-item"
+        href="#"
+        (click)="toggleSidebarMode(); $event.preventDefault()"
+      >
+        <i [class]="isSidebarMode ? 'fas fa-bars' : 'fas fa-sidebar'"></i>
+        {{ isSidebarMode ? 'Switch to Top Navigation' : 'Switch to Sidebar' }}
+      </a>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li>
+      <a
+        class="dropdown-item"
+        href="#"
+        (click)="toggleRadialMenu(); $event.preventDefault()"
+      >
+        <i [class]="isRadialMenuOpen ? 'fas fa-times' : 'fas fa-th'"></i>
+        {{ isRadialMenuOpen ? 'Close Radial Menu' : 'Open Radial Menu' }}
+      </a>
+        
+    </li> -->
+    
+    <!-- <li><hr class="dropdown-divider"></li> -->
+    
+    <!-- Existing Menu Items -->
+    <li *ngFor="let menuItem of getVisibleUserMenuItems()">
+      <a
+        class="dropdown-item"
+        [routerLink]="menuItem.path"
+        (click)="navigateTo(menuItem.path)"
+      >
+        <i [class]="menuItem.icon"></i>
+        {{ menuItem.label }}
+      </a>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li>
+      <a
+        class="dropdown-item"
+        href="#"
+        (click)="logout($event)"
+      >
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+      </a>
+    </li>
+  </ul>
+</li>
 
         <!-- Login Link - Only show if not logged in -->
         <li class="nav-item" *ngIf="!isUserLoggedIn && !isLoginPage()">
           <a class="nav-link" [routerLink]="['/login']">
             <i class="fas fa-sign-in-alt"></i>
-            Login {{!isUserLoggedIn}}
+            Login 
           </a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+<!-- Sidebar -->
+<!-- 
+<div 
+  class="sidebar-overlay" 
+  [class.show]="isSidebarMode && isNavbarOpen"
+  (click)="isNavbarOpen = false">
+</div>
+
+
+<div class="sidebar" [class.show]="isSidebarMode" *ngIf="isSidebarMode">
+  
+  <div class="sidebar-header">
+    <a class="sidebar-brand" [routerLink]="isUserLoggedIn ? ['/dashboard'] : ['/home']">
+      <img src="logo.png" width="120" height="40" alt="LeakSight">
+    </a>
+    <button class="close-sidebar" (click)="toggleSidebarMode()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  
+  <div class="sidebar-content">
+    <ul class="sidebar-nav">
+      
+      <li class="nav-section" *ngIf="getVisibleNavItems().length > 0">
+        <div class="section-title">Navigation</div>
+        <ul>
+          <li 
+            *ngFor="let item of getVisibleNavItems()" 
+            class="nav-item"
+            [class.has-children]="item.children && item.children.length > 0">
+            
+            
+            <ng-container *ngIf="item.children && item.children.length > 0; else sidebarSingleItem">
+              <a 
+                class="nav-link"
+                href="#"
+                [class.active]="isParentActive(item)"
+                data-bs-toggle="collapse"
+                [attr.data-bs-target]="'#collapse' + item.label.replace(' ', '')"
+                (click)="$event.preventDefault()">
+                <i [class]="item.icon"></i>
+                <span class="nav-text">{{ item.label }}</span>
+                <span *ngIf="item.badge && item.badge > 0" class="nav-badge">{{ item.badge }}</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+              </a>
+              <div class="collapse" [id]="'collapse' + item.label.replace(' ', '')">
+                <ul class="dropdown-menu show">
+                  <li *ngFor="let child of item.children">
+                    <a 
+                      class="dropdown-item"
+                      [routerLink]="child.path"
+                      routerLinkActive="active"
+                      (click)="onSidebarItemClick(child.path)">
+                      <i [class]="child.icon"></i>
+                      {{ child.label }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </ng-container>
+
+            
+            <ng-template #sidebarSingleItem>
+              <a 
+                class="nav-link"
+                [routerLink]="item.path"
+                routerLinkActive="active"
+                (click)="onSidebarItemClick(item.path)">
+                <i [class]="item.icon"></i>
+                <span class="nav-text">{{ item.label }}</span>
+                <span *ngIf="item.badge && item.badge > 0" class="nav-badge">{{ item.badge }}</span>
+              </a>
+            </ng-template>
+          </li>
+        </ul>
+      </li>
+
+      
+      <li class="nav-section" *ngIf="isUserLoggedIn && getVisibleUserMenuItems().length > 0">
+        <div class="section-title">Account</div>
+        <ul>
+          <li *ngFor="let menuItem of getVisibleUserMenuItems()" class="nav-item">
+            <a 
+              class="nav-link"
+              [routerLink]="menuItem.path"
+              routerLinkActive="active"
+              (click)="onSidebarItemClick(menuItem.path)">
+              <i [class]="menuItem.icon"></i>
+              <span class="nav-text">{{ menuItem.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+ 
+  <div class="sidebar-footer" *ngIf="isUserLoggedIn">
+    <div class="user-info">
+      <div class="user-avatar">{{ userInitial }}</div>
+      <div class="user-details">
+        <div class="username">{{ username }}</div>
+        <div class="user-status">Online</div>
+      </div>
+    </div>
+    <button class="logout-btn" (click)="logout($event)">
+      <i class="fas fa-sign-out-alt"></i>
+      Logout
+    </button>
+  </div>
+</div>
+
+
+<div 
+  class="radial-menu-overlay"
+  [class.show]="isRadialMenuOpen"
+  (click)="isRadialMenuOpen = false; resetRadialMenu()">
+</div>
+
+
+<div 
+  class="radial-menu-container"
+  [class.active]="isRadialMenuOpen"
+  *ngIf="isRadialMenuOpen">
+  
+  
+  <div class="radial-menu-level" *ngIf="radialMenuLevel > 0">
+    Level {{ radialMenuLevel + 1 }}
+  </div>
+
+  
+  <div 
+  class="radial-menu-center"
+  (click)="handleRadialMenuClick()">
+  <i [class]="radialMenuLevel > 0 ? 'fas fa-arrow-left' : 'fas fa-times'"></i>
+</div>
+  
+  <a 
+    *ngFor="let item of getCurrentRadialItems(); let i = index"
+    class="radial-menu-item"
+    [class.has-children]="item.children && item.children.length > 0"
+    [class.animate-in]="isRadialMenuOpen"
+    [style.transform]="'translate(' + calculateRadialPosition(i, getCurrentRadialItems().length).x + 'px, ' + calculateRadialPosition(i, getCurrentRadialItems().length).y + 'px)'"
+    [style.transition-delay]="(i * 0.05) + 's'"
+    (click)="openRadialSubmenu(item)">
+    
+    <i class="item-icon" [class]="item.icon"></i>
+    <span 
+      *ngIf="item.badge && item.badge > 0" 
+      class="item-badge">
+      {{ item.badge }}
+    </span>
+  </a>
+
+  
+  <div class="radial-breadcrumb" *ngIf="radialMenuHistory.length > 0">
+    <span class="breadcrumb-item">Menu</span>
+    <span 
+      *ngFor="let historyItem of radialMenuHistory" 
+      class="breadcrumb-item">
+      {{ historyItem.label }}
+    </span>
+    <span class="breadcrumb-item" *ngIf="activeRadialItem">
+      {{ activeRadialItem.label }}
+    </span>
+  </div>
+</div> -->

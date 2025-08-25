@@ -36,7 +36,12 @@ export class ChannelSubscriptionsComponent implements OnInit {
   // API endpoints
   private apiBaseUrl = 'http://localhost:8080';
   
-  
+  suggestedKeywords = [
+    'AI', 'Leak', 'Hack', 'Breach', 'Malware', 'Phishing', 'Ransomware',
+    'Vulnerability', 'Exploit', 'Zero-day', 'APT', 'Botnet', 'DDoS',
+    'SQL Injection', 'XSS', 'CSRF', 'Backdoor', 'Trojan', 'Spyware',
+    'Credential', 'Password', 'Database', 'API', 'Token', 'Certificate'
+  ];
 
   constructor(
     private http: HttpClient,

@@ -1,0 +1,229 @@
+<div class="bulk-ioc-container">
+      <div class="header-section">
+        <div class="header-content">
+          <div class="icon-title">
+            <div class="threat-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1l3 6 6 3-6 3-3 6-3-6-6-3 6-3z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <h1>Bulk IoC Creator</h1>
+              <p class="subtitle">Import and manage Indicators of Compromise in bulk</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value">{{ totalIoCs }}</div>
+              <div class="stat-label">Total IoCs</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">{{ validIoCs }}</div>
+              <div class="stat-label">Valid</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">{{ invalidIoCs }}</div>
+              <div class="stat-label">Errors</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="input-section">
+          <div class="method-selector">
+            <button 
+              class="method-btn" 
+              [class.active]="inputMethod === 'file'"
+              (click)="setInputMethod('file')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+              </svg>
+              Import File
+            </button>
+            <button 
+              class="method-btn" 
+              [class.active]="inputMethod === 'json'"
+              (click)="setInputMethod('json')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <path d="M14 2v6h6"/>
+                <path d="M16 13H8"/>
+                <path d="M16 17H8"/>
+                <path d="M10 9H8"/>
+              </svg>
+              Paste JSON
+            </button>
+          </div>
+
+          <div class="input-area">
+            <!-- File Upload Method -->
+            <div *ngIf="inputMethod === 'file'" class="file-upload-section">
+              <div class="upload-zone" 
+                   [class.dragover]="isDragOver"
+                   (dragover)="onDragOver($event)"
+                   (dragleave)="onDragLeave($event)"
+                   (drop)="onFileDropped($event)"
+                   (click)="fileInput.click()">
+                <input #fileInput type="file" accept=".txt,.json" (change)="onFileSelected($event)" hidden>
+                <div class="upload-content">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17,8 12,3 7,8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  <h3>Drop your file here</h3>
+                  <p>Or click to select a .txt or .json file</p>
+                  <div class="supported-formats">
+                    <span class="format-tag">TXT</span>
+                    <span class="format-tag">JSON</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div *ngIf="selectedFile" class="file-info">
+                <div class="file-details">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                  </svg>
+                  <div>
+                    <div class="file-name">{{ selectedFile.name }}</div>
+                    <div class="file-meta">{{ formatFileSize(selectedFile.size) }} • {{ selectedFile.type || 'text/plain' }}</div>
+                  </div>
+                </div>
+                <button class="btn-remove" (click)="removeFile()">×</button>
+              </div>
+            </div>
+
+            <!-- JSON Paste Method -->
+            <div *ngIf="inputMethod === 'json'" class="json-input-section">
+              <textarea 
+                class="json-textarea"
+                [(ngModel)]="jsonInput"
+                placeholder="Paste your IoC JSON data here...&#10;&#10;Example:&#10;{&#10;  &quot;iocs&quot;: [&#10;    {&#10;      &quot;value&quot;: &quot;198.51.100.42&quot;,&#10;      &quot;type&quot;: &quot;ip&quot;,&#10;      &quot;threat_level&quot;: &quot;medium&quot;,&#10;      &quot;status&quot;: &quot;active&quot;,&#10;      &quot;description&quot;: &quot;Malicious IP&quot;,&#10;      &quot;source&quot;: &quot;Manual&quot;,&#10;      &quot;confidence&quot;: 85,&#10;      &quot;tags&quot;: [&quot;malware&quot;]&#10;    }&#10;  ]&#10;}"
+                rows="12">
+              </textarea>
+              
+              <div class="json-actions">
+                <button class="btn-secondary" (click)="formatJson()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16,18 22,12 16,6"/>
+                    <polyline points="8,6 2,12 8,18"/>
+                  </svg>
+                  Format JSON
+                </button>
+                <button class="btn-secondary" (click)="clearJson()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3,6 5,6 21,6"/>
+                    <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                  </svg>
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <div class="process-section">
+              <button 
+                class="btn-process" 
+                (click)="processInput()"
+                [disabled]="!canProcess() || isProcessing">
+                <svg *ngIf="!isProcessing" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 12l2 2 4-4"/>
+                  <circle cx="12" cy="12" r="10"/>
+                </svg>
+                <div *ngIf="isProcessing" class="spinner"></div>
+                {{ isProcessing ? 'Processing...' : 'Process IoCs' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation Results -->
+        <div *ngIf="validationResults.length > 0" class="validation-section">
+          <h3 class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 12l2 2 4-4"/>
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+            Validation Results
+          </h3>
+
+          <div class="validation-summary">
+            <div class="summary-item success" *ngIf="validIoCs > 0">
+              <div class="summary-count">{{ validIoCs }}</div>
+              <div class="summary-label">Valid IoCs</div>
+            </div>
+            <div class="summary-item danger" *ngIf="invalidIoCs > 0">
+              <div class="summary-count">{{ invalidIoCs }}</div>
+              <div class="summary-label">Invalid IoCs</div>
+            </div>
+          </div>
+
+          <!-- Error Messages -->
+          <div *ngIf="validationErrors.length > 0" class="error-list">
+            <h4>Validation Errors:</h4>
+            <div class="error-item" *ngFor="let error of validationErrors">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+              {{ error }}
+            </div>
+          </div>
+
+          <!-- Valid IoCs Preview -->
+          <div *ngIf="parsedIoCs.length > 0" class="iocs-preview">
+            <h4>IoCs Preview ({{ Math.min(5, parsedIoCs.length) }} of {{ parsedIoCs.length }}):</h4>
+            <div class="ioc-grid">
+              <div class="ioc-card" *ngFor="let ioc of parsedIoCs.slice(0, 5)">
+                <div class="ioc-header">
+                  <span class="ioc-type" [class]="'type-' + ioc.type">{{ ioc.type.toUpperCase() }}</span>
+                  <span class="threat-level" [class]="'level-' + ioc.threat_level">{{ ioc.threat_level }}</span>
+                </div>
+                <div class="ioc-value">{{ ioc.value }}</div>
+                <div class="ioc-meta">
+                  <span class="confidence">{{ ioc.confidence }}% confidence</span>
+                  <span class="source">{{ ioc.source }}</span>
+                </div>
+                <div class="ioc-tags">
+                  <span class="tag" *ngFor="let tag of ioc.tags">{{ tag }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Section -->
+          <div class="submit-section">
+            <button 
+              class="btn-submit" 
+              (click)="submitBulkIoCs()"
+              [disabled]="parsedIoCs.length === 0 || isSubmitting">
+              <svg *ngIf="!isSubmitting" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22,2 15,22 11,13 2,9"/>
+              </svg>
+              <div *ngIf="isSubmitting" class="spinner"></div>
+              {{ isSubmitting ? 'Creating IoCs...' : 'Create ' + parsedIoCs.length + ' IoCs' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div *ngIf="submitResult" class="result-message" [class]="submitResult.success ? 'success' : 'error'">
+          <svg *ngIf="submitResult.success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4"/>
+            <circle cx="12" cy="12" r="10"/>
+          </svg>
+          <svg *ngIf="!submitResult.success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          {{ submitResult.message }}
+        </div>
+      </div>
+    </div>
