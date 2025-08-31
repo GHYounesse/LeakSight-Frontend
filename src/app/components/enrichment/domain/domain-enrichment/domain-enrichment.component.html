@@ -1,3 +1,14 @@
+<div class="loading-overlay active" *ngIf="isLoading" id="loadingOverlay">
+      <!-- <div class="overlay-spinner"></div> -->
+       <div class="spinner-bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+    </div>
+<div class="main-wrapper" [class.has-results]="result!=null">
 <div class="container-fluid">
       <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
@@ -57,7 +68,7 @@
               <small class="text-muted">
                 <i class="fas fa-info-circle me-1"></i>
                 Domain info: 
-                <span class="badge bg-info me-2">{{ detectedDomainInfo.tld.toUpperCase() }} TLD</span>
+                <span class="badge bg-info me-2">{{ detectedDomainInfo.tld.toUpperCase() || 'N/A'}} TLD</span>
                 <span class="badge bg-secondary" *ngIf="detectedDomainInfo.isSubdomain">Subdomain</span>
                 <span class="badge bg-success" *ngIf="!detectedDomainInfo.isSubdomain">Root Domain</span>
               </small>
@@ -65,7 +76,7 @@
           </div>
 
           <!-- Success Response -->
-          <div *ngIf="response && !error" class="result-item">
+          <!-- <div *ngIf="response && !error" class="result-item">
             <div class="d-flex align-items-center justify-content-between mb-3">
               <h4 class="text-light mb-0">
                 <i class="fas fa-check-circle text-success me-2"></i>
@@ -114,7 +125,7 @@
                 <small>Use the Job ID above to check the analysis status and retrieve results.</small>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Error Response -->
           <div *ngIf="error" class="result-item" style="border-color: var(--danger-color);">
@@ -136,7 +147,7 @@
           </div>
 
           <!-- Recent Submissions -->
-          <div *ngIf="recentSubmissions.length > 0" class="recent-activity">
+          <!-- <div *ngIf="recentSubmissions.length > 0" class="recent-activity">
             <h5 class="text-light mb-3">
               <i class="fas fa-history me-2"></i>
               Recent Submissions
@@ -174,7 +185,447 @@
                 </small>
               </div>
             </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+<div class="enrichment-container">
+      <!-- Job Status Header -->
+      <!-- <div class="job-status-header glass-effect">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h2 class="job-title text-light mb-3">Domain Enrichment Analysis</h2>
+            <div class="job-meta d-flex flex-wrap gap-3 align-items-center">
+              <span class="job-id badge bg-secondary">Job ID: {{ enrichmentData!.job_id }}</span>
+              <span class="status-badge badge" [ngClass]="getStatusClass()">
+                {{ enrichmentData!.status.toUpperCase() }}
+              </span>
+              <span class="progress-text text-muted">{{ enrichmentData!.progress }}% Complete</span>
+            </div>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <div class="timestamps">
+              <div class="timestamp mb-2">
+                <span class="label text-muted">Created:</span>
+                <span class="value text-light d-block">{{ formatTimestamp(enrichmentData!.created_at) }}</span>
+              </div>
+              <div class="timestamp">
+                <span class="label text-muted">Updated:</span>
+                <span class="value text-light d-block">{{ formatTimestamp(enrichmentData!.updated_at) }}</span>
+              </div>
+            </div>
           </div>
         </div>
+
+        
+        <div class="progress-container mt-3">
+          <div class="progress-bar-wrapper">
+            <div class="progress-bar" [style.width.%]="enrichmentData!.progress"></div>
+          </div>
+          <div class="progress-stats mt-2 d-flex justify-content-between text-muted">
+            <span>{{ enrichmentData!.completed_iocs }} / {{ enrichmentData!.total_iocs }} IOCs processed</span>
+            <span>{{ enrichmentData!.progress }}%</span>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Results Section -->
+      <div class="results-section" *ngIf="result!=null">
+        
+        <!-- Threat Summary Card -->
+        <div class="threat-summary glass-effect">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="severity-indicator d-flex align-items-center">
+                <div class="severity-icon me-3">🌐</div>
+                <div class="severity-info">
+                  <span class="threat-level" [ngClass]="getSeverityClass(result.severity)">
+                    {{ result.severity.toUpperCase() }}
+                  </span>
+                  <div class="confidence-score text-muted mt-1">
+                    Confidence: {{ result.confidence_score.toFixed(1) }}/1.0
+                  </div>
+                  <div class="reputation-score text-muted">
+                    Reputation: {{ result.reputation_score.toFixed(1) }}/100
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ result.security_details.malicious_detections }}</div>
+                    <div class="stats-label text-muted">Malicious</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ result.sources.length }}</div>
+                    <div class="stats-label text-muted">Sources</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ result.risk_factors.length }}</div>
+                    <div class="stats-label text-muted">Risk Factors</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Domain Information -->
+        <div class="card feature-card" *ngIf="result.domain_info">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">Domain Information</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>TLD:</strong> <span class="font-monospace">{{ result.domain_info.tld || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Creation Date:</strong> <span class="font-monospace">{{ formatTimestamp(result.domain_info.creation_date) }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Expiration Date:</strong> <span class="font-monospace">{{ formatTimestamp(result.domain_info.expiration_date) }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Registrar:</strong> <span class="font-monospace">{{ result.domain_info.registrar || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Last Analysis:</strong> <span class="font-monospace">{{ formatTimestamp(result.domain_info.last_analysis_date) }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>IP Addresses:</strong>
+                <div class="d-flex flex-wrap gap-1">
+                  <span class="badge bg-info font-monospace" *ngFor="let ip of result.domain_info.ip_addresses">{{ ip }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Security Details -->
+        <div class="card feature-card" *ngIf="result.security_details">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">Security Analysis</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3 mb-3">
+              <div class="col-md-3 col-sm-6">
+                <div class="stats-card glass-effect bg-danger">
+                  <div class="stats-number text-white">{{ result.security_details.malicious_detections }}</div>
+                  <div class="stats-label text-white">Malicious</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <div class="stats-card glass-effect bg-warning">
+                  <div class="stats-number text-dark">{{ result.security_details.suspicious_detections }}</div>
+                  <div class="stats-label text-dark">Suspicious</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <div class="stats-card glass-effect bg-success">
+                  <div class="stats-number text-white">{{ result.security_details.harmless_detections }}</div>
+                  <div class="stats-label text-white">Harmless</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <div class="stats-card glass-effect bg-secondary">
+                  <div class="stats-number text-white">{{ result.security_details.undetected }}</div>
+                  <div class="stats-label text-white">Undetected</div>
+                </div>
+              </div>
+            </div>
+            <div class="text-center text-muted">
+              <strong>Total Engines:</strong> {{ result.security_details.total_engines }}
+            </div>
+          </div>
+        </div>
+
+        <!-- SSL Certificate -->
+        <div class="card feature-card" *ngIf="result.certificates">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">SSL Certificate</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Subject CN:</strong> <span class="font-monospace">{{ result.certificates.subject_cn || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Issuer:</strong> <span class="font-monospace">{{ result.certificates.issuer || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Organization:</strong> <span class="font-monospace">{{ result.certificates.issuer_organization || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Valid From:</strong> <span class="font-monospace">{{ result.certificates.valid_from || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Valid Until:</strong> <span class="font-monospace">{{ result.certificates.valid_until || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Serial Number:</strong> <span class="font-monospace">{{ result.certificates.serial_number || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Key Algorithm:</strong> <span class="font-monospace">{{ result.certificates.key_algorithm || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Certificate Size:</strong> <span class="font-monospace">{{ result.certificates.certificate_size || "N/A" }} bytes</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Thumbprint:</strong> 
+                <span class="font-monospace">{{ result.certificates.thumbprint || "N/A" }}
+                  <button class="btn btn-sm btn-outline-info ms-2" (click)="copyToClipboard(result.certificates.thumbprint)">
+                    📋
+                  </button>
+                </span>
+              </li>
+            </ul>
+            <div class="mt-3" *ngIf="result.certificates.alternative_names.length > 0">
+              <h6 class="text-info">Alternative Names</h6>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-info" *ngFor="let name of result.certificates.alternative_names">{{ name || "N/A" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DNS Records -->
+        <div class="card feature-card" *ngIf="result.dns_records.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">DNS Records</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>TTL</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let record of result.dns_records">
+                    <td><span class="badge bg-primary">{{ record.type || "N/A" }}</span></td>
+                    <td class="text-light">{{ record.ttl || "N/A" }}</td>
+                    <td class="font-monospace text-light">{{ record.value || "N/A" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- WHOIS Information -->
+        <div class="card feature-card" *ngIf="result.whois_info">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">WHOIS Information</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Creation Date:</strong> <span class="font-monospace">{{ formatTimestamp(result.whois_info.creation_date) || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Expiry Date:</strong> <span class="font-monospace">{{ formatTimestamp(result.whois_info.expiry_date) || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Registrar:</strong> <span class="font-monospace">{{ result.whois_info.registrar || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Abuse Email:</strong> <span class="font-monospace">{{ result.whois_info.registrar_abuse_email || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Abuse Phone:</strong> <span class="font-monospace">{{ result.whois_info.registrar_abuse_phone || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Domain Status:</strong> <span class="font-monospace">{{ result.whois_info.domain_status || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>DNSSEC:</strong> 
+                <span class="badge" [ngClass]="result.whois_info.dnssec === 'unsigned' ? 'bg-warning text-dark' : 'bg-success'">
+                  {{ result.whois_info.dnssec || "N/A" }}
+                </span>
+              </li>
+            </ul>
+            <div class="mt-3" *ngIf="result.whois_info.name_servers.length > 0">
+              <h6 class="text-info">Name Servers</h6>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-secondary font-monospace" *ngFor="let ns of result.whois_info.name_servers">{{ ns || "N/A" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scan Results -->
+        <div class="card feature-card" *ngIf="result.scan_results">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">URLScan Analysis</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Scan UUID:</strong> <span class="font-monospace">{{ result.scan_results.urlscan_uuid || "N/A" || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Scanned URL:</strong> 
+                <a [href]="result.scan_results.scanned_url" class="text-info font-monospace" target="_blank">
+                  {{ result.scan_results.scanned_url || "N/A" }}
+                </a>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Scan Country:</strong> <span class="font-monospace">{{ result.scan_results.scan_country.toUpperCase() || 'N/A' || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Visibility:</strong> <span class="badge bg-info">{{ result.scan_results.visibility || "N/A" }}</span>
+              </li>
+              <li class="list-group-item bg-transparent text-light d-flex justify-content-between">
+                <strong>Submission Status:</strong> 
+                <span class="badge" [ngClass]="result.scan_results.submission_successful ? 'bg-success' : 'bg-danger'">
+                  {{ result.scan_results.submission_successful ? 'Success' : 'Failed' }}
+                </span>
+              </li>
+            </ul>
+            <div class="mt-3">
+              <a [href]="result.scan_results.result_url" class="btn btn-outline-info me-2" target="_blank">
+                🔗 View Results
+              </a>
+              <a [href]="result.scan_results.api_url" class="btn btn-outline-secondary" target="_blank">
+                📊 API Data
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Factors -->
+        <div class="card feature-card" *ngIf="result.risk_factors.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">
+              Risk Factors 
+              <span class="badge bg-warning text-dark ms-2">{{ result.risk_factors.length }}</span>
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="signatures-container">
+              <div class="result-item d-flex align-items-center" *ngFor="let factor of result.risk_factors">
+                <span class="signature-icon me-3">⚠️</span>
+                <span class="signature-name text-light">{{ factor  }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Intelligence Sources -->
+        <!-- <div class="card feature-card" *ngIf="result.sources.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">Intelligence Sources </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-3 col-sm-6" *ngFor="let source of result.sources">
+                <div class="badge bg-primary w-100 p-2">{{ source }}</div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        <div class="card feature-card" *ngIf="result.sources.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">🔍 Intelligence Sources</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-4 col-sm-6" *ngFor="let source of result.sources">
+                <div class="source-card glass-effect">
+                  <div class="source-icon">{{ getSourceIcon(source) }}</div>
+                  <div class="source-name">{{ formatSourceName(source) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Threat Indicators -->
+        <div class="card feature-card" *ngIf="result.threat_indicators.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">Threat Indicators</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-danger" *ngFor="let indicator of result.threat_indicators">{{ indicator }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Categories -->
+        <div class="row" *ngIf="hasAdditionalSecurityInfo(result.security_details)">
+          <div class="col-md-4" *ngIf="result.security_details.categories.length > 0">
+            <div class="card feature-card h-100">
+              <div class="card-header">
+                <h6 class="card-title text-light mb-0">Categories</h6>
+              </div>
+              <div class="card-body">
+                <div class="info-list">
+                  <div class="result-item" *ngFor="let category of result.security_details.categories">
+                    <span class="text-light">{{ category }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" *ngIf="result.security_details.related_malware.length > 0">
+            <div class="card feature-card h-100">
+              <div class="card-header">
+                <h6 class="card-title text-light mb-0">Related Malware</h6>
+              </div>
+              <div class="card-body">
+                <div class="info-list">
+                  <div class="result-item" *ngFor="let malware of result.security_details.related_malware">
+                    <span class="text-light">{{ malware }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" *ngIf="result.security_details.related_adversaries.length > 0">
+            <div class="card feature-card h-100">
+              <div class="card-header">
+                <h6 class="card-title text-light mb-0">Related Adversaries</h6>
+              </div>
+              <div class="card-body">
+                <div class="info-list">
+                  <div class="result-item" *ngFor="let adversary of result.security_details.related_adversaries">
+                    <span class="text-light">{{ adversary }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Display -->
+      <!-- <div class="alert alert-danger glass-effect" *ngIf="enrichmentData!.error">
+        <h5 class="alert-heading">⚠️ Error</h5>
+        <p class="mb-0">{{ enrichmentData!.error }}</p>
+      </div> -->
+
+      <!-- No Results -->
+      <div class="no-results glass-effect text-center" *ngIf="result==null">
+        <div class="no-results-icon">🌐</div>
+        <h4 class="text-light">No Results Available</h4>
+        <p class="text-muted">The domain enrichment analysis is still in progress or no data was found.</p>
       </div>
     </div>

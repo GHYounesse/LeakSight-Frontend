@@ -15,16 +15,16 @@ import { ViewIOCComponent } from './components/ioc/view/ioc-view.component';
 import { IOCUpdateComponent } from './components/ioc/update/ioc-update.component';
 
 import { HashEnrichmentComponent } from './components/enrichment/hash/hash-enrichment/hash-enrichment.component';
-import { FileHashResultsComponent } from './components/enrichment/hash/file-hash-results/file-hash-results.component';
+//import { FileHashResultsComponent } from './components/enrichment/hash/file-hash-results/file-hash-results.component';
 
 import { IpEnrichmentComponent } from './components/enrichment/ip/ip-enrichment/ip-enrichment.component';
-import { IPResultsComponent } from './components/enrichment/ip/ip-results/ip-results.component';
+//import { IPResultsComponent } from './components/enrichment/ip/ip-results/ip-results.component';
 
 import { UrlEnrichmentComponent } from './components/enrichment/url/url-enrichment/url-enrichment.component';
-import { UrlResultsComponent } from './components/enrichment/url/url-results/url-results.component';
+//import { UrlResultsComponent } from './components/enrichment/url/url-results/url-results.component';
 
 import { DomainEnrichmentComponent } from './components/enrichment/domain/domain-enrichment/domain-enrichment.component';
-import { DomainResultsComponent } from './components/enrichment/domain/domain-results/domain-results.component';
+//import { DomainResultsComponent } from './components/enrichment/domain/domain-results/domain-results.component';
 import { ThreatFeedsComponent } from './components/feeds/threat-feeds/threat-feeds.component';
 import { ChannelSubscriptionsComponent } from './components/subscriptions/channel-subscriptions/channel-subscriptions.component';
 import { ThreatChartsComponent } from './components/dashboard/threat-charts/threat-charts.component';
@@ -48,17 +48,17 @@ export const routes: Routes = [
 
     //////////Hash Enrichment //////////
     { path: 'enrichment/hash',component:HashEnrichmentComponent,canActivate: [AuthGuard]},
-    { path:"enrichment/hash/:jobId",component:FileHashResultsComponent,canActivate: [AuthGuard]},
+    //{ path:"enrichment/hash/:jobId",component:FileHashResultsComponent,canActivate: [AuthGuard]},
     //////////IP Enrichment //////////
     {path:'enrichment/ip',component:IpEnrichmentComponent,canActivate: [AuthGuard]},
-    { path:"enrichment/ip/:jobId",component:IPResultsComponent,canActivate: [AuthGuard]},
+    // { path:"enrichment/ip/:jobId",component:IPResultsComponent,canActivate: [AuthGuard]},
 
     //////////URL Enrichment //////////
     {path:'enrichment/url',component:UrlEnrichmentComponent,canActivate: [AuthGuard]},
-    { path:"enrichment/url/:jobId",component:UrlResultsComponent,canActivate: [AuthGuard]},
+    //{ path:"enrichment/url/:jobId",component:UrlResultsComponent,canActivate: [AuthGuard]},
     //////////Domain Enrichment //////////
     {path:'enrichment/domain',component:DomainEnrichmentComponent,canActivate: [AuthGuard]},
-    { path:"enrichment/domain/:jobId",component:DomainResultsComponent,canActivate: [AuthGuard]},
+    //{ path:"enrichment/domain/:jobId",component:DomainResultsComponent,canActivate: [AuthGuard]},
 
 
 

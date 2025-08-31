@@ -86,19 +86,19 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           console.log('Login response:', response);
           this.successMessage = 'Login successful! Redirecting...';
-          this.isLoading = false;
+          
           if (response.access_token && response.refresh_token) {
             localStorage.setItem('access_token', response.access_token);
             localStorage.setItem('refresh_token', response.refresh_token);
             localStorage.setItem('username', response.username);
           }
-          // if (response.user) {
-          //   localStorage.setItem('username', response.user.name);
-          // }
+          
           this.websocketService.connect();
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 1500);
+          this.isLoading = false;
+          // setTimeout(() => {
+          //   this.router.navigate(['/dashboard']);
+          // }, 1500);
+          this.router.navigate(['/dashboard']);
         },
         error: () => {
           this.errorMessage = 'Login failed. Please try again.';

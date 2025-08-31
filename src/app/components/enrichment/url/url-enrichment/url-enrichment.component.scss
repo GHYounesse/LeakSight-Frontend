@@ -103,3 +103,549 @@
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
     }
+
+
+
+
+
+    
+    
+
+    .enrichment-container {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      color: #fff;
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border-color: var(--info-color);
+    }
+
+    .feature-card .card-header {
+      background: rgba(52, 152, 219, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px 15px 0 0 !important;
+    }
+
+    .job-status-header {
+      margin-bottom: 2rem;
+      padding: 2rem;
+    }
+
+    .job-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar-wrapper {
+      background: rgba(255, 255, 255, 0.1);
+      height: 8px;
+      border-radius: 50px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--info-color), var(--success-color));
+      border-radius: 50px;
+      transition: width 0.3s ease;
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { opacity: 0.8; }
+      50% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+
+    /* URL Information */
+    .url-info-card {
+      margin-bottom: 2rem;
+      padding: 0 !important;
+    }
+
+    .url-details {
+      padding: 1.5rem;
+    }
+
+    .url-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .url-label {
+      font-size: 0.9rem;
+      color: var(--info-color);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .url-value {
+      font-size: 1rem;
+      word-break: break-all;
+    }
+
+    .redirection-chain {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .redirect-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .redirect-number {
+      background: var(--info-color);
+      color: white;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      min-width: 25px;
+    }
+
+    .redirect-url {
+      flex: 1;
+      word-break: break-all;
+    }
+
+    .redirect-arrow {
+      color: var(--warning-color);
+      font-size: 1.2rem;
+      margin: 0 0.5rem;
+    }
+
+    /* Threat Summary */
+    .threat-summary {
+      padding: 2rem;
+      margin-bottom: 2rem;}
+
+    .severity-indicator {
+      display: flex;
+      align-items: center;
+    }
+
+    .severity-icon {
+      font-size: 3rem;
+    }
+
+    .threat-level {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .threat-level.critical { color: var(--critical-color); }
+    .threat-level.high { color: var(--high-color); }
+    .threat-level.medium { color: var(--medium-color); }
+    .threat-level.low { color: var(--low-color); }
+
+    .stats-card {
+      padding: 1rem;
+      text-align: center;
+      border-radius: 10px;
+    }
+
+    .stats-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--info-color);
+    }
+
+    .verdict-badge-large {
+      font-size: 1rem !important;
+      padding: 0.5rem 1rem !important;
+    }
+
+    /* Detection Engines */
+    .detection-stat {
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .detection-number {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .detection-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .detection-stat.malicious {
+      background: rgba(231, 76, 60, 0.2);
+      border: 1px solid var(--danger-color);
+    }
+
+    .detection-stat.malicious .detection-number {
+      color: var(--danger-color);
+    }
+
+    .detection-stat.suspicious {
+      background: rgba(243, 156, 18, 0.2);
+      border: 1px solid var(--warning-color);
+    }
+
+    .detection-stat.suspicious .detection-number {
+      color: var(--warning-color);
+    }
+
+    .detection-stat.harmless {
+      background: rgba(39, 174, 96, 0.2);
+      border: 1px solid var(--success-color);
+    }
+
+    .detection-stat.harmless .detection-number {
+      color: var(--success-color);
+    }
+
+    .detection-stat.undetected {
+      background: rgba(108, 117, 125, 0.2);
+      border: 1px solid #6c757d;
+    }
+
+    .detection-stat.undetected .detection-number {
+      color: #6c757d;
+    }
+
+    .detection-bar {
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .detection-segment {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .detection-segment.malicious { background: var(--danger-color); }
+    .detection-segment.suspicious { background: var(--warning-color); }
+    .detection-segment.harmless { background: var(--success-color); }
+    .detection-segment.undetected { background: #6c757d; }
+
+    /* HTTP Info */
+    .http-info-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .http-label {
+      font-size: 0.9rem;
+      color: var(--info-color);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .http-value {
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .http-headers {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .header-item {
+      display: flex;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 5px;
+    }
+
+    .header-name {
+      color: var(--info-color);
+      font-weight: 600;
+      min-width: 150px;
+    }
+
+    .header-value {
+      flex: 1;
+      margin-left: 1rem;
+    }
+
+    /* Network Info */
+    .network-info-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .network-label {
+      font-size: 0.9rem;
+      color: var(--info-color);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .network-value {
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .country-flag {
+      font-size: 1.2rem;
+      margin-right: 0.5rem;
+    }
+
+    .external-links {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    /* Categories */
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .category-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.75rem;
+      border-radius: 8px;
+    }
+
+    .category-source {
+      min-width: 100px;
+    }
+
+    /* Pulses */
+    .pulse-item {
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+    }
+
+    .pulse-header {
+      display: flex;
+      justify-content: between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .pulse-name {
+      flex: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .pulse-description {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .references-list {
+      margin-top: 0.5rem;
+    }
+
+    /* Submission Info */
+    .submission-metric {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .submission-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .submission-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0.5rem;
+    }
+
+    .submission-info-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    /* Outgoing Links */
+    .outgoing-links-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .outgoing-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Sources */
+    .source-card {
+      text-align: center;
+      padding: 1rem;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .source-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .source-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .source-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Tags */
+    .threat-tag {
+      font-size: 0.9rem !important;
+      padding: 0.5rem 1rem !important;
+      border-radius: 25px !important;
+    }
+
+    /* Status and Verdict classes */
+    .bg-success { background-color: var(--success-color) !important; }
+    .bg-warning { background-color: var(--warning-color) !important; }
+    .bg-danger { background-color: var(--danger-color) !important; }
+    .bg-info { background-color: var(--info-color) !important; }
+    .bg-secondary { background-color: #6c757d !important; }
+
+    /* No Results */
+    .no-results {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .no-results-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .enrichment-container {
+        padding: 1rem;
+      }
+
+      .job-title {
+        font-size: 1.5rem;
+      }
+
+      .stats-number, .detection-number {
+        font-size: 1.5rem;
+      }
+
+      .threat-level {
+        font-size: 1.2rem;
+      }
+    }
+
+
+      .main-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+/* When results are present, remove centering */
+.has-results {
+  display: block;
+  min-height: auto;
+}
+.loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                height: 10px;
+            }
+            40% {
+                height: 32px;
+            }
+        }
+
+        .spinner-bars {
+            display: flex;
+            gap: 4px;
+            align-items: flex-end;
+            height: 30px;
+        }
+
+        .bar {
+            width: 8px;
+            background: linear-gradient(to top, var(--info-color), var(--primary-color));
+            border-radius: 2px;
+            animation: bounce 1.2s ease-in-out infinite;
+        }
+
+        .bar:nth-child(1) { animation-delay: -0.24s; }
+        .bar:nth-child(2) { animation-delay: -0.12s; }
+        .bar:nth-child(3) { animation-delay: 0; }
+        .bar:nth-child(4) { animation-delay: 0.12s; }
+        .bar:nth-child(5) { animation-delay: 0.24s; }
+
+  

@@ -151,9 +151,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   userMenuItems: NavItem[] = [
     //{ label: 'Profile', path: '/profile', icon: 'fas fa-user' },
-    { label: 'Settings', path: '/settings', icon: 'fas fa-cog' },
-    { label: 'Subscriptions', path: '/subscriptions', icon: 'fab fa-telegram' },
-    { label: 'Help', path: '/help', icon: 'fas fa-question-circle' }
+    // { label: 'Settings', path: '/settings', icon: 'fas fa-cog' },
+    { label: 'Subscriptions', path: '/subscriptions', icon: 'fab fa-telegram' }
+    // { label: 'Help', path: '/help', icon: 'fas fa-question-circle' }
   ];
 
   //systemOnline = true;

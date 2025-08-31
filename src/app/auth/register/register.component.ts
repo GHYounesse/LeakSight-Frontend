@@ -86,9 +86,10 @@ export class RegisterComponent implements OnInit {
       next: (response) => {
         this.successMessage = 'Account created successfully! Please check your email to verify your account.';
         this.isLoading = false;
-        setTimeout(() => {
-            this.goToLogin();
-          }, 2000);
+        // setTimeout(() => {
+        //     this.goToLogin();
+        //   }, 2000);
+        this.goToLogin();
       },
       error: () => {
         

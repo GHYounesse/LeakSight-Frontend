@@ -1,4 +1,15 @@
-<div class="container-fluid">
+<div class="loading-overlay active" *ngIf="isLoading" id="loadingOverlay">
+      <!-- <div class="overlay-spinner"></div> -->
+       <div class="spinner-bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+    </div>
+<div class="main-wrapper" [class.has-results]="result!=null">
+<div class="container-fluid" >
       <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
           <div class="search-container mt-4">
@@ -62,7 +73,7 @@
           </div>
 
           <!-- Success Response -->
-          <div *ngIf="response && !error" class="result-item">
+          <!-- <div *ngIf="response && !error" class="result-item">
             <div class="d-flex align-items-center justify-content-between mb-3">
               <h4 class="text-light mb-0">
                 <i class="fas fa-check-circle text-success me-2"></i>
@@ -110,7 +121,7 @@
             </div>
           </div>
 
-          <!-- Error Response -->
+          
           <div *ngIf="error" class="result-item" style="border-color: var(--danger-color);">
             <div class="d-flex align-items-center mb-3">
               <i class="fas fa-exclamation-triangle text-danger me-2"></i>
@@ -126,10 +137,10 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Recent Submissions -->
-          <div *ngIf="recentSubmissions.length > 0" class="recent-activity">
+          <!-- <div *ngIf="recentSubmissions.length > 0" class="recent-activity">
             <h5 class="text-light mb-3">
               <i class="fas fa-history me-2"></i>
               Recent Submissions
@@ -166,7 +177,398 @@
                 </small>
               </div>
             </div>
+          </div> -->
+        </div>
+      </div>
+</div>
+    </div>
+    <div class="enrichment-container" *ngIf="result!=null" >
+      <!-- Job Status Header -->
+      <!-- <div class="job-status-header glass-effect">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h2 class="job-title text-light mb-3">🌐 IP Address Enrichment Analysis</h2>
+            <div class="job-meta d-flex flex-wrap gap-3 align-items-center">
+              <span class="job-id badge bg-secondary">Job ID: {{ enrichmentData!.job_id }}</span>
+              <span class="status-badge badge" [ngClass]="getStatusClass()">
+                {{ enrichmentData!.status.toUpperCase() }}
+              </span>
+              <span class="progress-text text-muted">{{ enrichmentData!.progress }}% Complete</span>
+            </div>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <div class="timestamps">
+              <div class="timestamp mb-2">
+                <span class="label text-muted">Created:</span>
+                <span class="value text-light d-block">{{ formatTimestamp(enrichmentData!.created_at) }}</span>
+              </div>
+              <div class="timestamp">
+                <span class="label text-muted">Updated:</span>
+                <span class="value text-light d-block">{{ formatTimestamp(enrichmentData!.updated_at) }}</span>
+              </div>
+            </div>
           </div>
         </div>
+
+        
+        <div class="progress-container mt-3">
+          <div class="progress-bar-wrapper">
+            <div class="progress-bar" [style.width.%]="enrichmentData!.progress"></div>
+          </div>
+          <div class="progress-stats mt-2 d-flex justify-content-between text-muted">
+            <span>{{ enrichmentData!.completed_iocs }} / {{ enrichmentData!.total_iocs }} IPs processed</span>
+            <span>{{ enrichmentData!.progress }}%</span>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Results Section -->
+      <div class="results-section" *ngIf="result">
+        
+        <!-- Threat Summary Card -->
+        <div class="threat-summary glass-effect">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="severity-indicator d-flex align-items-center">
+                <div class="severity-icon me-3">{{ getSeverityIcon(result.severity) }}</div>
+                <div class="severity-info">
+                  <span class="threat-level" [ngClass]="getSeverityClass(result.severity)">
+                    {{ result.severity.toUpperCase() }}
+                  </span>
+                  <div class="confidence-score text-muted mt-1">
+                    Confidence: {{ result.confidence_score.toFixed(1) }}/1.0
+                  </div>
+                  <div class="reputation-score text-muted">
+                    Reputation: {{ result.reputation_score.toFixed(1) }}/100
+                  </div>
+                  <div class="verdict-badge mt-2">
+                    <span class="badge" [ngClass]="getVerdictClass(result.verdict)">
+                      {{ result.verdict }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ result.sources.length }}</div>
+                    <div class="stats-label text-muted">Sources</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ result.threat_types.length }}</div>
+                    <div class="stats-label text-muted">Threat Types</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stats-card glass-effect">
+                    <div class="stats-number">{{ formatLastSeen(result.last_seen) }}</div>
+                    <div class="stats-label text-muted">Last Seen</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detection Engines Overview -->
+        <div class="card feature-card">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">🛡️ Detection Engines Analysis</h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-md-3 col-6 mb-3">
+                <div class="detection-stat malicious">
+                  <div class="detection-number">{{ result.detection_engines.malicious }}</div>
+                  <div class="detection-label">Malicious</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="detection-stat suspicious">
+                  <div class="detection-number">{{ result.detection_engines.suspicious }}</div>
+                  <div class="detection-label">Suspicious</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="detection-stat harmless">
+                  <div class="detection-number">{{ result.detection_engines.harmless }}</div>
+                  <div class="detection-label">Harmless</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="detection-stat undetected">
+                  <div class="detection-number">{{ result.detection_engines.undetected }}</div>
+                  <div class="detection-label">Undetected</div>
+                </div>
+              </div>
+            </div>
+            <div class="detection-summary mt-3">
+              <div class="detection-bar">
+                <div class="detection-segment malicious" 
+                     [style.width.%]="(result.detection_engines.malicious / result.detection_engines.total) * 100">
+                </div>
+                <div class="detection-segment suspicious" 
+                     [style.width.%]="(result.detection_engines.suspicious / result.detection_engines.total) * 100">
+                </div>
+                <div class="detection-segment harmless" 
+                     [style.width.%]="(result.detection_engines.harmless / result.detection_engines.total) * 100">
+                </div>
+                <div class="detection-segment undetected" 
+                     [style.width.%]="(result.detection_engines.undetected / result.detection_engines.total) * 100">
+                </div>
+              </div>
+              <div class="text-center mt-2 text-muted">
+                Total Engines: {{ result.detection_engines.total }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Geographic Information -->
+        <div class="card feature-card" *ngIf="result.geographic_info">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">🌍 Geographic Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <div class="geo-info-item">
+                  <div class="geo-label">Country</div>
+                  <div class="geo-value">
+                    <span class="country-flag">{{ getCountryFlag(result.geographic_info.country) }}</span>
+                    {{ result.geographic_info.country }} ({{ result.geographic_info.continent }})
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="geo-info-item">
+                  <div class="geo-label">Network</div>
+                  <div class="geo-value font-monospace">{{ result.geographic_info.network }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="geo-info-item">
+                  <div class="geo-label">ASN</div>
+                  <div class="geo-value">AS{{ result.geographic_info.asn }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="geo-info-item">
+                  <div class="geo-label">AS Owner</div>
+                  <div class="geo-value">{{ result.geographic_info.as_owner }}</div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="geo-info-item">
+                  <div class="geo-label">Regional Registry</div>
+                  <div class="geo-value">{{ result.geographic_info.regional_internet_registry }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Abuse Reports -->
+        <div class="card feature-card" *ngIf="result.abuse_reports.abuseipdb">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">🚨 Abuse Reports (AbuseIPDB)</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div class="abuse-metric">
+                  <div class="abuse-number text-danger">{{ result.abuse_reports.abuseipdb.total_reports }}</div>
+                  <div class="abuse-label">Total Reports</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="abuse-metric">
+                  <div class="abuse-number text-warning">{{ result.abuse_reports.abuseipdb.distinct_users }}</div>
+                  <div class="abuse-label">Distinct Users</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="abuse-metric">
+                  <div class="abuse-number" [ngClass]="result.abuse_reports.abuseipdb.confidence_score > 75 ? 'text-danger' : 'text-warning'">
+                    {{ result.abuse_reports.abuseipdb.confidence_score }}%
+                  </div>
+                  <div class="abuse-label">Confidence</div>
+                </div>
+              </div>
+            </div>
+            <div class="row g-3 mt-3">
+              <div class="col-md-6">
+                <div class="abuse-detail">
+                  <strong>ISP:</strong> {{ result.abuse_reports.abuseipdb.isp }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="abuse-detail">
+                  <strong>Domain:</strong> {{ result.abuse_reports.abuseipdb.domain }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="abuse-detail">
+                  <strong>Usage Type:</strong> {{ result.abuse_reports.abuseipdb.usage_type }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="abuse-detail">
+                  <strong>Last Reported:</strong> {{ formatTimestamp(result.abuse_reports.abuseipdb.last_reported) }}
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="abuse-badges">
+                  <span class="badge" [ngClass]="result.abuse_reports.abuseipdb.is_whitelisted ? 'bg-success' : 'bg-secondary'">
+                    {{ result.abuse_reports.abuseipdb.is_whitelisted ? '✅ Whitelisted' : '❌ Not Whitelisted' }}
+                  </span>
+                  <span class="badge" [ngClass]="result.abuse_reports.abuseipdb.is_tor ? 'bg-danger' : 'bg-secondary'">
+                    {{ result.abuse_reports.abuseipdb.is_tor ? '🧅 Tor Exit Node' : '🔒 Not Tor' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certificate Information -->
+        <div class="card feature-card" *ngIf="result.certificate_info">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">🔐 SSL Certificate Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="cert-item">
+                  <strong>Subject:</strong>
+                  <span class="font-monospace">{{ result.certificate_info.subject }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="cert-item">
+                  <strong>Issuer:</strong>
+                  <span class="font-monospace">{{ result.certificate_info.issuer }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="cert-item">
+                  <strong>Valid From:</strong>
+                  <span class="font-monospace">{{ formatTimestamp(result.certificate_info.validity_not_before) }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="cert-item">
+                  <strong>Valid Until:</strong>
+                  <span class="font-monospace">{{ formatTimestamp(result.certificate_info.validity_not_after) }}</span>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="cert-item">
+                  <strong>Serial Number:</strong>
+                  <span class="font-monospace small">{{ result.certificate_info.serial_number }}</span>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="cert-item">
+                  <strong>Thumbprint:</strong>
+                  <span class="font-monospace small">{{ result.certificate_info.thumbprint }}</span>
+                  <button class="btn btn-sm btn-outline-info ms-2" (click)="copyToClipboard(result.certificate_info.thumbprint)">
+                    📋 Copy
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Threat Types -->
+        <div class="card feature-card" *ngIf="result.threat_types.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">⚠️ Threat Types</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge threat-type-badge" 
+                    [ngClass]="getThreatTypeClass(threatType)"
+                    *ngFor="let threatType of result.threat_types">
+                {{ formatThreatType(threatType) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Malware Families -->
+        <div class="card feature-card" *ngIf="result.malware_families.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">🦠 Malware Families</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-danger p-2" *ngFor="let family of result.malware_families">
+                {{ family }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Intelligence Sources -->
+        <div class="card feature-card" *ngIf="result.sources.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">🔍 Intelligence Sources</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-4 col-sm-6" *ngFor="let source of result.sources">
+                <div class="source-card glass-effect">
+                  <div class="source-icon">{{ getSourceIcon(source) }}</div>
+                  <div class="source-name">{{ formatSourceName(source) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Threat Actors -->
+        <div class="card feature-card" *ngIf="result.threat_actors.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">👥 Associated Threat Actors</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-danger p-2" *ngFor="let actor of result.threat_actors">
+                {{ actor }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="card feature-card" *ngIf="result.tags.length > 0">
+          <div class="card-header">
+            <h5 class="card-title text-light mb-0">🏷️ Tags</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-secondary" *ngFor="let tag of result.tags">{{ tag }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Display -->
+      <!-- <div class="alert alert-danger glass-effect" *ngIf="enrichmentData!.error">
+        <h5 class="alert-heading">⚠️ Error</h5>
+        <p class="mb-0">{{ enrichmentData!.error }}</p>
+      </div> -->
+
+      <!-- No Results -->
+      <div class="no-results glass-effect text-center" *ngIf="result==null">
+        <div class="no-results-icon">🌐</div>
+        <h4 class="text-light">No Results Available</h4>
+        <p class="text-muted">The IP enrichment analysis is still in progress or no data was found.</p>
       </div>
     </div>
